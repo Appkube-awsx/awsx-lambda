@@ -35,7 +35,7 @@ var AwsxLambdaCmd = &cobra.Command{
 	},
 }
 
-func GetLambdaList(region string, crossAccountRoleArn string, accessKey string, secretKey string, externalId string) (*lambda.ListFunctionsOutput, error) {
+func GetLambdaList(region string, crossAccountRoleArn string, accessKey string, secretKey string, externalId string) *lambda.ListFunctionsOutput {
 	log.Println("Getting lambda list summary")
 	lambdaClient := client.GetClient(region, crossAccountRoleArn, accessKey, secretKey, externalId)
 
@@ -45,7 +45,7 @@ func GetLambdaList(region string, crossAccountRoleArn string, accessKey string, 
 		log.Fatalln("Error: in getting lambda list", err)
 	}
 	log.Println(functionList)
-	return functionList, err
+	return functionList
 }
 
 //func GetConfig(region string, crossAccountRoleArn string, accessKey string, secretKey string) *configservice.GetDiscoveredResourceCountsOutput {
