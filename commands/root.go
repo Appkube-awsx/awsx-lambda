@@ -14,7 +14,7 @@ import (
 
 // AwsxCloudElementsCmd represents the base command when called without any subcommands
 var AwsxLambdaCmd = &cobra.Command{
-	Use:   "Lambda",
+	Use:   "lambda",
 	Short: "get Lambda Details command gets resource counts",
 	Long:  `get Lambda Details command gets resource counts details of an AWS account`,
 	Run: func(cmd *cobra.Command, args []string) {
@@ -30,12 +30,12 @@ var AwsxLambdaCmd = &cobra.Command{
 		authFlag := authenticater.AuthenticateData(vaultUrl, accountNo, region, acKey, secKey, crossAccountRoleArn, externalId)
 
 		if authFlag {
-			getLambdaList(region, crossAccountRoleArn, acKey, secKey, externalId)
+			GetLambdaList(region, crossAccountRoleArn, acKey, secKey, externalId)
 		}
 	},
 }
 
-func getLambdaList(region string, crossAccountRoleArn string, accessKey string, secretKey string, externalId string) (*lambda.ListFunctionsOutput, error) {
+func GetLambdaList(region string, crossAccountRoleArn string, accessKey string, secretKey string, externalId string) (*lambda.ListFunctionsOutput, error) {
 	log.Println("Getting lambda list summary")
 	lambdaClient := client.GetClient(region, crossAccountRoleArn, accessKey, secretKey, externalId)
 
@@ -49,7 +49,7 @@ func getLambdaList(region string, crossAccountRoleArn string, accessKey string, 
 }
 
 //func GetConfig(region string, crossAccountRoleArn string, accessKey string, secretKey string) *configservice.GetDiscoveredResourceCountsOutput {
-//	return getLambdaList(region, crossAccountRoleArn, accessKey, secretKey)
+//	return GetLambdaList(region, crossAccountRoleArn, accessKey, secretKey)
 //}
 
 // Execute adds all child commands to the root command and sets flags appropriately.
