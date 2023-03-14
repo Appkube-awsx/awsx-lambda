@@ -84,3 +84,29 @@ Example:
     awsx-lambda getConfigData -f my-lambda --zone us-west-2 --accessKey AKIAIOSFODNN7EXAMPLE --secretKey wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY --crossAccountRoleArn arn:aws:iam::123456789012:role/crossAccountRole
 
 This command returns the configuration details of the specified lambda in JSON format.
+
+
+## commands tree:
+    lambda
+    subcommand:
+        main: (get list of lambdas)
+            flags:
+                1. all (boolean) -> get all lambdas at once or get it by marker(pagination)
+                2. marker (string) -> to get next page of lambdas list
+
+        getConfigData: (get details of a lambda)
+            flags:
+                1. function (string) -> function name to get detail
+
+        totalCount: (get number of all lambdas)
+            flags: !no flags
+
+        errorCount: (get total number of executions and errors)
+            flags: !no flags
+
+
+
+
+```TODO```
+1. errorCount of specific function
+2. error detail of specific function

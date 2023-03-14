@@ -4,6 +4,7 @@ Copyright © 2023 Manoj Sharma manoj.sharma@synectiks.com
 package commands
 
 import (
+	"fmt"
 	"github.com/Appkube-awsx/awsx-lambda/authenticater"
 	"github.com/Appkube-awsx/awsx-lambda/client"
 	"github.com/Appkube-awsx/awsx-lambda/commands/lambdacmd"
@@ -26,26 +27,73 @@ var AwsxLambdaCmd = &cobra.Command{
 		secKey := cmd.PersistentFlags().Lookup("secretKey").Value.String()
 		crossAccountRoleArn := cmd.PersistentFlags().Lookup("crossAccountRoleArn").Value.String()
 		externalId := cmd.PersistentFlags().Lookup("externalId").Value.String()
+		marker := cmd.Flags().Lookup("marker").Value.String()
+		all, _ := cmd.Flags().GetBool("all")
 
 		authFlag := authenticater.AuthenticateData(vaultUrl, accountNo, region, acKey, secKey, crossAccountRoleArn, externalId)
 
 		if authFlag {
-			GetLambdaList(region, crossAccountRoleArn, acKey, secKey, externalId)
+
+			if all {
+				functionList := GetAllLambdaList(region, crossAccountRoleArn, acKey, secKey, externalId)
+				fmt.Println("List of all lambda functions", functionList)
+			} else {
+				functionList := GetLambdaList(region, crossAccountRoleArn, acKey, secKey, externalId, marker)
+				fmt.Println("List of by marker lambda functions", functionList)
+			}
 		}
 	},
 }
 
-func GetLambdaList(region string, crossAccountRoleArn string, accessKey string, secretKey string, externalId string) *lambda.ListFunctionsOutput {
+func GetLambdaList(region string, crossAccountRoleArn string, accessKey string, secretKey string, externalId string, marker string) *lambda.ListFunctionsOutput {
+	log.Println("Getting lambda list summary")
+	lambdaClient := client.GetClient(region, crossAccountRoleArn, accessKey, secretKey, externalId)
+
+	input := &lambda.ListFunctionsInput{}
+
+	if marker != "" {
+		input = &lambda.ListFunctionsInput{
+			Marker: &marker,
+		}
+	}
+
+	functionList, err := lambdaClient.ListFunctions(input)
+	if err != nil {
+		log.Fatalln("Error: in getting lambda list", err)
+	}
+
+	return functionList
+
+}
+
+func GetAllLambdaList(region string, crossAccountRoleArn string, accessKey string, secretKey string, externalId string) []*lambda.FunctionConfiguration {
 	log.Println("Getting lambda list summary")
 	lambdaClient := client.GetClient(region, crossAccountRoleArn, accessKey, secretKey, externalId)
 
 	input := &lambda.ListFunctionsInput{}
 	functionList, err := lambdaClient.ListFunctions(input)
 	if err != nil {
-		log.Fatalln("Error: in getting lambda list", err)
+		log.Fatalln("Error: in getting total number of lambdas", err)
 	}
-	log.Println(functionList)
-	return functionList
+
+	allFunctions := functionList.Functions
+	marker := functionList.NextMarker
+
+	// Loop for getting all lambdas
+	for marker != nil {
+		input = &lambda.ListFunctionsInput{
+			Marker: marker,
+		}
+		functionList, err = lambdaClient.ListFunctions(input)
+		if err != nil {
+			log.Fatalln("Error: in getting lambda numbers", err)
+		}
+		allFunctions = append(allFunctions, functionList.Functions...)
+		marker = functionList.NextMarker
+		fmt.Println("Functions got till now:: ", len(allFunctions))
+	}
+
+	return allFunctions
 }
 
 //func GetConfig(region string, crossAccountRoleArn string, accessKey string, secretKey string) *configservice.GetDiscoveredResourceCountsOutput {
@@ -65,6 +113,11 @@ func Execute() {
 func init() {
 	AwsxLambdaCmd.AddCommand(lambdacmd.GetConfigDataCmd)
 	AwsxLambdaCmd.AddCommand(lambdacmd.GetCostDataCmd)
+	AwsxLambdaCmd.AddCommand(lambdacmd.GetNumberOfErrorCmd)
+	AwsxLambdaCmd.AddCommand(lambdacmd.GetTotalNumberOfLambdaCmd)
+	AwsxLambdaCmd.Flags().String("marker", "", "marker for next list")
+	AwsxLambdaCmd.Flags().Bool("all", false, "to get all lambdas at once")
+
 	AwsxLambdaCmd.PersistentFlags().String("vaultUrl", "", "vault end point")
 	AwsxLambdaCmd.PersistentFlags().String("accountId", "", "aws account number")
 	AwsxLambdaCmd.PersistentFlags().String("zone", "", "aws region")

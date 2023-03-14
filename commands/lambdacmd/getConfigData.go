@@ -31,21 +31,21 @@ var GetConfigDataCmd = &cobra.Command{
 		authFlag := authenticater.AuthenticateData(vaultUrl, accountNo, region, acKey, secKey, crossAccountRoleArn, externalId)
 
 		if authFlag {
-			function, _ := cmd.Flags().GetString("func")
-			getLambdaDetail(region, crossAccountRoleArn, acKey, secKey, function, externalId)
+			function, _ := cmd.Flags().GetString("function")
+			GetLambdaDetail(region, crossAccountRoleArn, acKey, secKey, function, externalId)
 		}
 	},
 }
 
-func getLambdaDetail(region string, crossAccountRoleArn string, accessKey string, secretKey string, function string, externalId string) (*lambda.FunctionConfiguration, error) {
+func GetLambdaDetail(region string, crossAccountRoleArn string, accessKey string, secretKey string, function string, externalId string) (*lambda.GetFunctionOutput, error) {
 	log.Println("Getting Lambda  data")
 	lambdaClient := client.GetClient(region, crossAccountRoleArn, accessKey, secretKey, externalId)
 
-	input := &lambda.GetFunctionConfigurationInput{
+	input := &lambda.GetFunctionInput{
 		FunctionName: aws.String(function),
 	}
 
-	lambdaData, err := lambdaClient.GetFunctionConfiguration(input)
+	lambdaData, err := lambdaClient.GetFunction(input)
 	if err != nil {
 		log.Fatalln("Error: in getting lambda data", err)
 	}
@@ -55,9 +55,9 @@ func getLambdaDetail(region string, crossAccountRoleArn string, accessKey string
 }
 
 func init() {
-	GetConfigDataCmd.Flags().StringP("func", "f", "", "lambda function name")
+	GetConfigDataCmd.Flags().StringP("function", "f", "", "lambda function name")
 
-	if err := GetConfigDataCmd.MarkFlagRequired("func"); err != nil {
-		fmt.Println("--func is required", err)
+	if err := GetConfigDataCmd.MarkFlagRequired("function"); err != nil {
+		fmt.Println("--function is required", err)
 	}
 }
