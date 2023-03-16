@@ -96,17 +96,18 @@ This command returns the configuration details of the specified lambda in JSON f
 
         getConfigData: (get details of a lambda)
             flags:
-                1. function (string) -> function name to get detail
+                1. function (string) -> function name to get detail || required
 
         totalCount: (get number of all lambdas)
             flags: !no flags
 
         errorCount: (get total number of executions and errors)
-            flags: !no flags
-
-
+            flags: 
+                1. function (string) -> function name to get err count
+    
+         errorDetail: (get total number of executions and errors)
+            flags: 
+                1. function (string) -> function name to get err count || required
 
 
 ```TODO```
-1. errorCount of specific function
-2. error detail of specific function

@@ -115,6 +115,7 @@ func init() {
 	AwsxLambdaCmd.AddCommand(lambdacmd.GetCostDataCmd)
 	AwsxLambdaCmd.AddCommand(lambdacmd.GetNumberOfErrorCmd)
 	AwsxLambdaCmd.AddCommand(lambdacmd.GetTotalNumberOfLambdaCmd)
+	AwsxLambdaCmd.AddCommand(lambdacmd.GetDetailOfErrorCmd)
 	AwsxLambdaCmd.Flags().String("marker", "", "marker for next list")
 	AwsxLambdaCmd.Flags().Bool("all", false, "to get all lambdas at once")
 

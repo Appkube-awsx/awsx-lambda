@@ -33,43 +33,19 @@ var GetNumberOfErrorCmd = &cobra.Command{
 		authFlag := authenticater.AuthenticateData(vaultUrl, accountNo, region, acKey, secKey, crossAccountRoleArn, externalId)
 
 		if authFlag {
+			function, _ := cmd.Flags().GetString("function")
 			//getLambdaSigningDetail(region, crossAccountRoleArn, acKey, secKey, function, externalId)
-			GetStreamList(region, crossAccountRoleArn, acKey, secKey, externalId)
+
+			if function != "" {
+				GetFunctionErrCount(region, crossAccountRoleArn, acKey, secKey, externalId, function)
+			} else {
+				GetAllFunctionsErrCount(region, crossAccountRoleArn, acKey, secKey, externalId)
+			}
 		}
 	},
 }
 
-func getLambdaSigningDetail(region string, crossAccountRoleArn string, accessKey string, secretKey string, function string, externalId string) *cloudwatchlogs.GetLogEventsOutput {
-	log.Println("Getting Lambda  data")
-	cloudClient := client.GetCloudWatchClient(region, crossAccountRoleArn, accessKey, secretKey, externalId)
-
-	logGroupName := fmt.Sprintf("/aws/lambda/%s", function)
-
-	input := &cloudwatchlogs.GetLogEventsInput{
-		LogGroupName:  aws.String(logGroupName),
-		LogStreamName: aws.String("2023/03/09/[$LATEST]55eb4c092fc74d62b088ef86249353a7"),
-	}
-
-	resp, err := cloudClient.GetLogEvents(input)
-	if err != nil {
-		log.Fatalln("Error: in getting lambda data", err)
-	}
-
-	// If no log events were returned, return an error
-	fmt.Println(resp)
-
-	input.NextToken = resp.NextForwardToken
-	resp1, err := cloudClient.GetLogEvents(input)
-
-	if err != nil {
-		log.Fatalln("Error: in getting second data", err)
-	}
-	fmt.Println(resp1)
-
-	return resp
-}
-
-func GetStreamList(region string, crossAccountRoleArn string, accessKey string, secretKey string, externalId string) int {
+func GetAllFunctionsErrCount(region string, crossAccountRoleArn string, accessKey string, secretKey string, externalId string) int {
 	log.Println("Getting execution number and errors")
 	cloudClient := client.GetCloudWatchClient(region, crossAccountRoleArn, accessKey, secretKey, externalId)
 	lambdaClient := client.GetClient(region, crossAccountRoleArn, accessKey, secretKey, externalId)
@@ -146,8 +122,85 @@ func GetStreamList(region string, crossAccountRoleArn string, accessKey string, 
 	}
 
 	fmt.Println("Final execution count is:", executionCount, "errors are:", errCount)
+	return errCount
+}
+
+func GetFunctionErrCount(region string, crossAccountRoleArn string, accessKey string, secretKey string, externalId string, function string) int {
+	log.Println("Getting execution number and errors")
+	cloudClient := client.GetCloudWatchClient(region, crossAccountRoleArn, accessKey, secretKey, externalId)
+
+	errCount := 0
+	executionCount := 0
+
+	logGroupName := fmt.Sprintf("/aws/lambda/%s", function)
+
+	fmt.Println("log group name", logGroupName)
+	input := &cloudwatchlogs.DescribeLogStreamsInput{
+		LogGroupName: aws.String(logGroupName),
+	}
+
+	firstStreamsList, err := cloudClient.DescribeLogStreams(input)
+	if err != nil {
+		log.Println("no cloud watch log found for this function")
+	}
+
+	nextToken := firstStreamsList.NextToken
+	executionCount += len(firstStreamsList.LogStreams)
+
+	errCount += errorCountInStreamList(firstStreamsList, logGroupName, cloudClient)
+	fmt.Println("Total executions till now:", executionCount, "and errors are:", errCount)
+
+	for firstStreamsList.NextToken != nil {
+
+		input = &cloudwatchlogs.DescribeLogStreamsInput{
+			LogGroupName: aws.String(logGroupName),
+			NextToken:    nextToken,
+		}
+
+		tokenStreamsList, err := cloudClient.DescribeLogStreams(input)
+		if err != nil {
+			log.Println("no cloud watch log found for this function")
+		}
+
+		executionCount += len(tokenStreamsList.LogStreams)
+		errCount += errorCountInStreamList(tokenStreamsList, logGroupName, cloudClient)
+
+		fmt.Println("Total executions till now:", executionCount, "and errors are:", errCount)
+
+	}
+
+	fmt.Println("Final execution count is:", executionCount, "errors are:", errCount)
 
 	return errCount
 }
 
-func init() {}
+func errorCountInStreamList(firstStreamsList *cloudwatchlogs.DescribeLogStreamsOutput, logGroupName string, cloudClient *cloudwatchlogs.CloudWatchLogs) int {
+	errCount := 0
+	for _, stream := range firstStreamsList.LogStreams {
+
+		input := &cloudwatchlogs.GetLogEventsInput{
+			LogGroupName:  aws.String(logGroupName),
+			LogStreamName: aws.String(*stream.LogStreamName),
+			StartFromHead: aws.Bool(true),
+		}
+
+		resp, err := cloudClient.GetLogEvents(input)
+
+		if err != nil {
+			log.Fatalln("Error: in getting event data", err)
+		}
+
+		for _, event := range resp.Events {
+			//fmt.Println("tracing error in :", *stream.LogStreamName)
+			if strings.Contains(*event.Message, "ERROR") {
+				errCount++
+				break
+			}
+		}
+	}
+	return errCount
+}
+
+func init() {
+	GetNumberOfErrorCmd.Flags().StringP("function", "f", "", "lambda function name")
+}
