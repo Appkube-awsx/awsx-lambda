@@ -45,6 +45,7 @@ var AwsxLambdaCmd = &cobra.Command{
 	},
 }
 
+// GetLambdaList -> get lambda list with pagination
 func GetLambdaList(region string, crossAccountRoleArn string, accessKey string, secretKey string, externalId string, marker string) *lambda.ListFunctionsOutput {
 	log.Println("Getting lambda list summary")
 	lambdaClient := client.GetClient(region, crossAccountRoleArn, accessKey, secretKey, externalId)
@@ -66,6 +67,7 @@ func GetLambdaList(region string, crossAccountRoleArn string, accessKey string, 
 
 }
 
+// GetAllLambdaList -> get all lambdas in one go
 func GetAllLambdaList(region string, crossAccountRoleArn string, accessKey string, secretKey string, externalId string) []*lambda.FunctionConfiguration {
 	log.Println("Getting lambda list summary")
 	lambdaClient := client.GetClient(region, crossAccountRoleArn, accessKey, secretKey, externalId)
