@@ -8,7 +8,7 @@ import (
 	"github.com/Appkube-awsx/awsx-lambda/authenticater"
 	"github.com/Appkube-awsx/awsx-lambda/client"
 	"github.com/Appkube-awsx/awsx-lambda/commands/lambdacmd"
-	"github.com/aws/aws-sdk-go/service/lambda"
+	"github.com/Appkube-awsx/awsx-lambda/controllers"
 	"github.com/spf13/cobra"
 	"log"
 )
@@ -20,87 +20,25 @@ var AwsxLambdaCmd = &cobra.Command{
 	Long:  `get Lambda Details command gets resource counts details of an AWS account`,
 	Run: func(cmd *cobra.Command, args []string) {
 		log.Println("Command lambda started")
-		vaultUrl := cmd.PersistentFlags().Lookup("vaultUrl").Value.String()
-		accountNo := cmd.PersistentFlags().Lookup("accountId").Value.String()
-		region := cmd.PersistentFlags().Lookup("zone").Value.String()
-		acKey := cmd.PersistentFlags().Lookup("accessKey").Value.String()
-		secKey := cmd.PersistentFlags().Lookup("secretKey").Value.String()
-		crossAccountRoleArn := cmd.PersistentFlags().Lookup("crossAccountRoleArn").Value.String()
-		externalId := cmd.PersistentFlags().Lookup("externalId").Value.String()
+
+		authFlag := authenticater.RootCommandAuth(cmd)
+
 		marker := cmd.Flags().Lookup("marker").Value.String()
 		all, _ := cmd.Flags().GetBool("all")
 
-		authFlag := authenticater.AuthenticateData(vaultUrl, accountNo, region, acKey, secKey, crossAccountRoleArn, externalId)
-
 		if authFlag {
+			lambdaClient := client.GetClient()
 
 			if all {
-				functionList := GetAllLambdaList(region, crossAccountRoleArn, acKey, secKey, externalId)
+				functionList := controllers.GetAllLambdaList(lambdaClient)
 				fmt.Println("List of all lambda functions", functionList)
 			} else {
-				functionList := GetLambdaList(region, crossAccountRoleArn, acKey, secKey, externalId, marker)
+				functionList := controllers.GetLambdaList(lambdaClient, marker)
 				fmt.Println("List of by marker lambda functions", functionList)
 			}
 		}
 	},
 }
-
-// GetLambdaList -> get lambda list with pagination
-func GetLambdaList(region string, crossAccountRoleArn string, accessKey string, secretKey string, externalId string, marker string) *lambda.ListFunctionsOutput {
-	log.Println("Getting lambda list summary")
-	lambdaClient := client.GetClient(region, crossAccountRoleArn, accessKey, secretKey, externalId)
-
-	input := &lambda.ListFunctionsInput{}
-
-	if marker != "" {
-		input = &lambda.ListFunctionsInput{
-			Marker: &marker,
-		}
-	}
-
-	functionList, err := lambdaClient.ListFunctions(input)
-	if err != nil {
-		log.Fatalln("Error: in getting lambda list", err)
-	}
-
-	return functionList
-
-}
-
-// GetAllLambdaList -> get all lambdas in one go
-func GetAllLambdaList(region string, crossAccountRoleArn string, accessKey string, secretKey string, externalId string) []*lambda.FunctionConfiguration {
-	log.Println("Getting lambda list summary")
-	lambdaClient := client.GetClient(region, crossAccountRoleArn, accessKey, secretKey, externalId)
-
-	input := &lambda.ListFunctionsInput{}
-	functionList, err := lambdaClient.ListFunctions(input)
-	if err != nil {
-		log.Fatalln("Error: in getting total number of lambdas", err)
-	}
-
-	allFunctions := functionList.Functions
-	marker := functionList.NextMarker
-
-	// Loop for getting all lambdas
-	for marker != nil {
-		input = &lambda.ListFunctionsInput{
-			Marker: marker,
-		}
-		functionList, err = lambdaClient.ListFunctions(input)
-		if err != nil {
-			log.Fatalln("Error: in getting lambda numbers", err)
-		}
-		allFunctions = append(allFunctions, functionList.Functions...)
-		marker = functionList.NextMarker
-		fmt.Println("Functions got till now:: ", len(allFunctions))
-	}
-
-	return allFunctions
-}
-
-//func GetConfig(region string, crossAccountRoleArn string, accessKey string, secretKey string) *configservice.GetDiscoveredResourceCountsOutput {
-//	return GetLambdaList(region, crossAccountRoleArn, accessKey, secretKey)
-//}
 
 // Execute adds all child commands to the root command and sets flags appropriately.
 // This is called by main.main(). It only needs to happen once to the rootCmd.
@@ -118,6 +56,7 @@ func init() {
 	AwsxLambdaCmd.AddCommand(lambdacmd.GetNumberOfErrorCmd)
 	AwsxLambdaCmd.AddCommand(lambdacmd.GetTotalNumberOfLambdaCmd)
 	AwsxLambdaCmd.AddCommand(lambdacmd.GetDetailOfErrorCmd)
+
 	AwsxLambdaCmd.Flags().String("marker", "", "marker for next list")
 	AwsxLambdaCmd.Flags().Bool("all", false, "to get all lambdas at once")
 

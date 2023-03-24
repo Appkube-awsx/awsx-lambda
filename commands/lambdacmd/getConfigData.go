@@ -7,10 +7,8 @@ import (
 	"fmt"
 	"github.com/Appkube-awsx/awsx-lambda/authenticater"
 	"github.com/Appkube-awsx/awsx-lambda/client"
-	"github.com/aws/aws-sdk-go/aws"
-	"github.com/aws/aws-sdk-go/service/lambda"
+	"github.com/Appkube-awsx/awsx-lambda/controllers"
 	"github.com/spf13/cobra"
-	"log"
 )
 
 // getConfigDataCmd represents the getConfigData command
@@ -20,44 +18,22 @@ var GetConfigDataCmd = &cobra.Command{
 	Long:  ``,
 	Run: func(cmd *cobra.Command, args []string) {
 
-		vaultUrl := cmd.Parent().PersistentFlags().Lookup("vaultUrl").Value.String()
-		accountNo := cmd.Parent().PersistentFlags().Lookup("accountId").Value.String()
-		region := cmd.Parent().PersistentFlags().Lookup("zone").Value.String()
-		acKey := cmd.Parent().PersistentFlags().Lookup("accessKey").Value.String()
-		secKey := cmd.Parent().PersistentFlags().Lookup("secretKey").Value.String()
-		crossAccountRoleArn := cmd.Parent().PersistentFlags().Lookup("crossAccountRoleArn").Value.String()
-		externalId := cmd.Parent().PersistentFlags().Lookup("externalId").Value.String()
-
-		authFlag := authenticater.AuthenticateData(vaultUrl, accountNo, region, acKey, secKey, crossAccountRoleArn, externalId)
+		authFlag := authenticater.ChildCommandAuth(cmd)
 
 		if authFlag {
+			lambdaClient := client.GetClient()
+
 			function, _ := cmd.Flags().GetString("function")
-			GetLambdaDetail(region, crossAccountRoleArn, acKey, secKey, function, externalId)
+			lambdaDetail := controllers.GetLambdaDetail(lambdaClient, function)
+			fmt.Println(lambdaDetail)
 		}
 	},
-}
-
-func GetLambdaDetail(region string, crossAccountRoleArn string, accessKey string, secretKey string, function string, externalId string) (*lambda.GetFunctionOutput, error) {
-	log.Println("Getting Lambda  data")
-	lambdaClient := client.GetClient(region, crossAccountRoleArn, accessKey, secretKey, externalId)
-
-	input := &lambda.GetFunctionInput{
-		FunctionName: aws.String(function),
-	}
-
-	lambdaData, err := lambdaClient.GetFunction(input)
-	if err != nil {
-		log.Fatalln("Error: in getting lambda data", err)
-	}
-
-	log.Println(lambdaData)
-	return lambdaData, err
 }
 
 func init() {
 	GetConfigDataCmd.Flags().StringP("function", "f", "", "lambda function name")
 
 	if err := GetConfigDataCmd.MarkFlagRequired("function"); err != nil {
-		fmt.Println("--function is required", err)
+		fmt.Println("--function or -f is required", err)
 	}
 }

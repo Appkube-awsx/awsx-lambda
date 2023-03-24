@@ -2,6 +2,7 @@ package client
 
 import (
 	"fmt"
+	"github.com/Appkube-awsx/awsx-lambda/authenticater"
 	"github.com/Appkube-awsx/awsx-lambda/awssession"
 	"github.com/aws/aws-sdk-go/service/cloudwatchlogs"
 	"github.com/aws/aws-sdk-go/service/costexplorer"
@@ -12,10 +13,10 @@ import (
 	"log"
 )
 
-func GetClient(region string, crossAccountRoleArn string, accessKey string, secretKey string, externalId string) *lambda.Lambda {
+func GetClient() *lambda.Lambda {
 
 	sessionName := "assume_role_session_name"
-	return assumeRole(crossAccountRoleArn, sessionName, externalId, accessKey, secretKey, region)
+	return assumeRole(authenticater.CrossAccountRoleArn, sessionName, authenticater.ExternalId, authenticater.AcKey, authenticater.SecKey, authenticater.Region)
 }
 
 func GetCostClient(region string, crossAccountRoleArn string, accessKey string, secretKey string, externalId string) *costexplorer.CostExplorer {
@@ -23,9 +24,9 @@ func GetCostClient(region string, crossAccountRoleArn string, accessKey string, 
 	return assumeRoleForCost(crossAccountRoleArn, sessionName, externalId, accessKey, secretKey, region)
 }
 
-func GetCloudWatchClient(region string, crossAccountRoleArn string, accessKey string, secretKey string, externalId string) *cloudwatchlogs.CloudWatchLogs {
+func GetCloudWatchClient() *cloudwatchlogs.CloudWatchLogs {
 	sessionName := "assume_role_session_name"
-	return assumeRoleForCloudWatch(crossAccountRoleArn, sessionName, externalId, accessKey, secretKey, region)
+	return assumeRoleForCloudWatch(authenticater.CrossAccountRoleArn, sessionName, authenticater.ExternalId, authenticater.AcKey, authenticater.SecKey, authenticater.Region)
 }
 
 func assumeRole(roleArn string, sessionName string, externalId string, accesskey string, secretKey string, region string) *lambda.Lambda {
