@@ -1,0 +1,4 @@
+idle function -> not run from 1 month
+trends -> too much execution ( top 10% )
+
+net recieved -> no. of regions
