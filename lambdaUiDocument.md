@@ -3,7 +3,7 @@
 
 | Section no. | Data Format(Api/Metrics/Log/Trace) |  Source detail | Description | Logic |
 |-------------|------------------------------------|----------------|-------------|-------|
-| 1 | Custom API | API => `/count/all`, CLI => `lambda count --all=true` |  It gives total number of lambda functions present in aws account |
+| 1 | Custom API | API => `/count/all`, CLI => `lambda count --all=true` |  It gives total number of lambda functions present in aws account | -- |
 | 2 | CWL | Q => `limit 1` | It gives total number of idle lambda functions present in aws account | run query for every lambda in 1 month period and if result is 0 then it is idle function |
 | 3 | CWL | Q => `filter @message like /(?i) (Exception \| error \| fail \| 5dd)/ \| stats count() as ErrorCount` | It gives total number of errors in lambda functions present in aws account | Run query for all lambdas and it will give total number of errors |
 | 4 | Metrics | Q => `SELECT SUM("Throttles") FROM "AWS/Lambda" WHERE "FunctionName" = '<function_name>' AND "ResourceType" = "Function" AND "Period" = 300 AND "StartTime" >= now() - 24h AND "EndTime" <= now()` | It gives total number of throttle lambda functions present in aws account (exceeding fixed limit) | run this query for all lambdas and get total throttels for last 24 hours |
