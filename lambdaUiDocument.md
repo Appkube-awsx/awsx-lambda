@@ -7,6 +7,10 @@
 ![lambda marked image](./img/Screenshot%202023-03-31%20174517.png)
 ![lambda marked image](./img/Screenshot%202023-03-31%20181533.png)
 
+# Lambda Overview
+![lambda merked image](./img/Screenshot%202023-04-03%20114139.png)
+![lambda merked image](./img/Screenshot%202023-04-03%20120743.png)
+
 | Section no. | Data Format(Api/Metrics/Log/Trace) |  Source detail | Description | Logic |
 |-------------|------------------------------------|----------------|-------------|-------|
 | 1 | Custom API | API => `/count/all`, CLI => `lambda count --all=true` |  It gives total number of lambda functions present in aws account | -- |
@@ -17,7 +21,7 @@
 | 6 | API/ metric | API => `/performance`, CLI => `lambda performance` |  It gives overall performance percentage | -- |
 | 7 | API/ metrics | API => `/reliability`, CLI => `lambda reliability`  | It gives overall reliability percentage | -- |
 | 8 | API/ metrics | API => `/avalibility`, CLI => `lambda avalibility`   | It gives overall avalibility percentage |  -- |
-| 9 | API/ metrics | API => `/endUsage`, CLI => ` lambda endUsage`  | It gives overall endUsage percentage | -- |
+| 9 | API/ metrics | API => `/endUsage`, CLI => `lambda endUsage`  | It gives overall endUsage percentage | -- |
 | 10 | API/ metrics | API => ` /security`, CLI => `lambda security` |   It gives overall security percentage | -- |
 | 12 | CWL | Q => `stats avg(@duration)`  | It gives average latency of all lambda functions | Run this query for all fucntions to get average latency for all function |
 | 13 | CWL | Q => `stats count() by @logStream` |  It gives top 10 most executed lambdas in given range of time | Run query for all functions and get top executed fucntions |
@@ -32,7 +36,10 @@
 | 23 | metrics | [Click here](#General-query-for-getting-data-from-metrics) | It gives latency data for lambdas | -- |
 | 24 | CWL/metrics | [Click here](#General-query-for-getting-data-from-metrics) | It gives error data for lambdas | -- |
 | 25 | metrics | [Click here](#General-query-for-getting-data-from-metrics) | It gives throttle data for lambdas | -- |
-| 26 | CWL/metrics | [Click here](#General-query-for-getting-data-from-metrics) | It gives trends data for lambdas | -- |
+| 26 | metrics | [Click here](#General-query-for-getting-data-from-metrics) | It gives trends data for lambdas | -- |
+| 27 | CWL/metrics | `stats count() by @logStream` [Click here](#General-query-for-getting-data-from-metrics) | It gives number of invocation for lambdas | Run given query for different time range |
+| 29 | CWL | `fields @message \| filter @message like /ERROR/ \| sort @timestamp desc \| limit 5` <br> For metrics => [Click here](#General-query-for-getting-data-from-metrics) | It gives most recent 5 errors | -- |
+| 29 | CWL | `stats avg(@duration), sum(@duration)` | It gives average duration and total duration | -- |
 
 ## -- 11
 Time range params in every command and api
