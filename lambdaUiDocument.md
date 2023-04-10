@@ -1,5 +1,5 @@
 # lambda home
-![lambda marked image](./img/lambda%20home.png)
+![lambda marked image](./img/lambda-home-ui-numbering.png)
 ![lambda marked image](./img/lambda-home-2.png)
 
 # Go To Events
@@ -10,6 +10,12 @@
 # Lambda Overview
 ![lambda merked image](./img/Screenshot%202023-04-03%20114139.png)
 ![lambda merked image](./img/Screenshot%202023-04-03%20120743.png)
+![lambda merked image](./img/Screenshot%202023-04-06%20163636.png)
+![lambda merked image](./img/Screenshot%202023-04-07%20134003.png)
+
+# Analyser-> Error
+![lambda merked image](./img/Screenshot%202023-04-10%20132508.png)
+
 
 | Section no. | Data Format(Api/Metrics/Log/Trace) |  Source detail | Description | Logic |
 |-------------|------------------------------------|----------------|-------------|-------|
@@ -37,9 +43,15 @@
 | 24 | CWL/metrics | [Click here](#General-query-for-getting-data-from-metrics) | It gives error data for lambdas | -- |
 | 25 | metrics | [Click here](#General-query-for-getting-data-from-metrics) | It gives throttle data for lambdas | -- |
 | 26 | metrics | [Click here](#General-query-for-getting-data-from-metrics) | It gives trends data for lambdas | -- |
-| 27 | CWL/metrics | `stats count() by @logStream` [Click here](#General-query-for-getting-data-from-metrics) | It gives number of invocation for lambdas | Run given query for different time range |
-| 29 | CWL | `fields @message \| filter @message like /ERROR/ \| sort @timestamp desc \| limit 5` <br> For metrics => [Click here](#General-query-for-getting-data-from-metrics) | It gives most recent 5 errors | -- |
-| 29 | CWL | `stats avg(@duration), sum(@duration)` | It gives average duration and total duration | -- |
+| 27 | CWL/metrics | Q => `stats count() by @logStream` <br> For metrics => [Click here](#General-query-for-getting-data-from-metrics) | It gives number of invocation for lambdas | Run given query for different time range |
+| 29 | CWL | Q => `fields @message \| filter @message like /ERROR/ \| sort @timestamp desc \| limit 5` <br> For metrics => [Click here](#General-query-for-getting-data-from-metrics) | It gives most recent 5 errors | -- |
+| 30 | CWL | Q => `stats avg(@duration), sum(@duration)` | It gives average duration and total duration | -- |
+| 31 | CWL | Q => `stats sum ( @maxMemoryUsed/ 10000000) as memoryUsed_MB` | It gives total memory used in mb  | -- |
+| 32 | CWL/metrics | Q => `stats count() by @logStream` | It gives top used functions | filter most involed functions |
+| 34 | CWL/metrics | Q => `fields @maxMemoryUsed/10000000 \| sort @maxMemoryUsed desc \| limit 1` | It gives max memory used in mb by a function  | Get for all and get top 5 |
+| 36 | metrics | [Click here](#General-query-for-getting-data-from-metrics) | It gives computer usage / CPU usage  | -- |
+| 37 | log/matrics | Q => `filter @message like /ERROR/ \| stats count() as ErrorCount` <br> Error metrics => [Click here](#General-query-for-getting-data-from-metrics) | It gives error number for graph  | run query on all fucntions for every month and get data |
+| 39 | log/matrics | Q => `filter @message like /ERROR/ \| stats count() as ErrorCount` <br> Error metrics => [Click here](#General-query-for-getting-data-from-metrics) | It gives most errored fucntion  | run query on function for every month and get number of error for every fucntion and find tops  |
 
 ## -- 11
 Time range params in every command and api
@@ -74,4 +86,9 @@ aws cloudwatch get-metric-data --metric-data-queries '[{
     },
     "ReturnData": true
 }]' --start-time 2022-01-01T00:00:00Z --end-time 2022-03-31T23:59:59Z --region us-east-1 --query 'MetricDataResults[].Values[]'
+```
+
+SQL format
+```sql
+SELECT AVG(<matrics-name>) FROM SCHEMA("AWS/Lambda", FunctionName) WHERE FunctionName = '<function-name>'
 ```
