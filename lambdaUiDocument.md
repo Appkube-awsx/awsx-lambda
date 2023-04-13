@@ -22,6 +22,7 @@
 
 # Analyser -> Resources
 ![lambda merked image](./img/Screenshot%202023-04-13%20143042.png)
+![lambda merked image](./img/Screenshot%202023-04-13%20170403.png)
 
 
 | Section no. | Data Format(Api/Metrics/Log/Trace) |  Source detail | Description | Logic |
@@ -69,7 +70,8 @@
 | 50 | CWL | Q => `stats max(@maxMemoryUsed)` | It gives maximum memory used by lambda fucntion | Find max memory for every fucntion and filter top 5 |
 | 51 | CWL | Allocated memory: Q => `stats max(@memorySize)` <br> Max used memory: Q => `stats max(@maxMemoryUsed)` | It gives maximum memory used by lambda fucntion and allocated memory | Find max memory for every fucntion and filter top 5 |
 | 52 | metrics | [Click here](#General-query-for-getting-data-from-metrics) | It gives maximum computer-usage data for graph | Find max memory for every fucntion and filter top 5 |
-| 53 | CWL/metrics |  Q => `fields @maxMemoryUsed * @duration` <br> For metrics => [Click here](#General-query-for-getting-data-from-metrics) | It gives maximum compute-usage data for function | find data and convert it into GB-s unit |
+| 53 | CWL/metrics |  Q => `stats avg(@maxMemoryUsed * @duration)` <br> For metrics => [Click here](#General-query-for-getting-data-from-metrics) | It gives average compute-usage for function | find data and convert it into GB-s unit |
+| 55 | CWL | average duration: Q => `stats avg(@duration)` <br> Billed duration =>  Q => `stats avg(@billedDuration)` <br>  | It gives average duration vs billed duration | find data for all fucntions and find top functions |
 
 ## -- 11
 Time range params in every command and api
