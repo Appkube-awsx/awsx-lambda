@@ -117,8 +117,22 @@ func GetAllFunctionsErrCount(cloudClient *cloudwatchlogs.CloudWatchLogs, lambdaC
 func GetFunctionErrCount(cloudClient *cloudwatchlogs.CloudWatchLogs, function string) (int, int, error) {
 	log.Println("Getting execution number and errors")
 
-	startTime := time.Date(2019, 1, 1, 1, 1, 1, 1, time.UTC) // 1 hour ago
-	endTime := time.Now()
+	layout := "2006-01-02 15:04:05.000000000 -0700 MST"
+	//startTime := time.Date(2019, 1, 1, 1, 1, 1, 1, time.UTC) // 1 hour ago
+	str := "2023-01-01 01:01:01.000000001 +0000 UTC"
+	end := "2023-02-01 01:01:01.000000001 +0000 UTC"
+
+	startTime, err := time.Parse(layout, str)
+	endTime, err := time.Parse(layout, end)
+
+	if err != nil {
+		log.Fatalln(err)
+	}
+
+	//endTime1 := time.Now()
+	fmt.Println("this is time", endTime)
+	//fmt.Println(endTime1)
+
 	query := `filter @message like /(?i)(Exception|error|fail|5dd)/
 									| stats count() as ErrorCount`
 

@@ -13,8 +13,15 @@
 ![lambda merked image](./img/Screenshot%202023-04-06%20163636.png)
 ![lambda merked image](./img/Screenshot%202023-04-07%20134003.png)
 
-# Analyser-> Error
+# Analyser -> Error
 ![lambda merked image](./img/Screenshot%202023-04-10%20132508.png)
+![lambda merked image](./img/Screenshot%202023-04-11%20172440.png)
+
+# Analyser -> Usage 
+![lambda merked image](./img/Screenshot%202023-04-11%20174116.png)
+
+# Analyser -> Resources
+![lambda merked image](./img/Screenshot%202023-04-13%20143042.png)
 
 
 | Section no. | Data Format(Api/Metrics/Log/Trace) |  Source detail | Description | Logic |
@@ -51,7 +58,18 @@
 | 34 | CWL/metrics | Q => `fields @maxMemoryUsed/10000000 \| sort @maxMemoryUsed desc \| limit 1` | It gives max memory used in mb by a function  | Get for all and get top 5 |
 | 36 | metrics | [Click here](#General-query-for-getting-data-from-metrics) | It gives computer usage / CPU usage  | -- |
 | 37 | log/matrics | Q => `filter @message like /ERROR/ \| stats count() as ErrorCount` <br> Error metrics => [Click here](#General-query-for-getting-data-from-metrics) | It gives error number for graph  | run query on all fucntions for every month and get data |
-| 39 | log/matrics | Q => `filter @message like /ERROR/ \| stats count() as ErrorCount` <br> Error metrics => [Click here](#General-query-for-getting-data-from-metrics) | It gives most errored fucntion  | run query on function for every month and get number of error for every fucntion and find tops  |
+| 39 | log/matrics | Q => `filter @message like /ERROR/ \| stats count() as ErrorCount` <br> Error metrics => [Click here](#General-query-for-getting-data-from-metrics) | It gives most errored fucntion  | run query on function for every month and get number of error for every fucntion and find tops |
+| 42 | metrics | [Click here](#General-query-for-getting-data-from-metrics)  | It gives number of errors for given time range | -- |
+| 44 | metrics | [Click here](#General-query-for-getting-data-from-metrics)  | It gives number of throttles for given time range | -- |
+| 45 | metrics | [Click here](#General-query-for-getting-data-from-metrics)  | It gives duration of lambda given time range | -- |
+| 46 | CWL/metrics | Q => `stats count() by @logStream` <br> For metrics => [Click here](#General-query-for-getting-data-from-metrics)  | It gives invocation data for lambda given time range  | Get invocation metrics |
+| 47 | CWL/metrics | Q => `stats count() by @logStream` <br> For metrics => [Click here](#General-query-for-getting-data-from-metrics)  | It gives invocation data for lambda given time range  | Get invocation numbers for all fucntions and filter top 10 |
+| 48 | API | -- | It gives percentage of lambdas used by different services  | We have to store this information in different database that which lambda belongs to which service |
+| 49 | metrics | [Click here](#General-query-for-getting-data-from-metrics) | It gives data for graph of cpu usage  | |
+| 50 | CWL | Q => `stats max(@maxMemoryUsed)` | It gives maximum memory used by lambda fucntion | Find max memory for every fucntion and filter top 5 |
+| 51 | CWL | Allocated memory: Q => `stats max(@memorySize)` <br> Max used memory: Q => `stats max(@maxMemoryUsed)` | It gives maximum memory used by lambda fucntion and allocated memory | Find max memory for every fucntion and filter top 5 |
+| 52 | metrics | [Click here](#General-query-for-getting-data-from-metrics) | It gives maximum computer-usage data for graph | Find max memory for every fucntion and filter top 5 |
+| 53 | CWL/metrics |  Q => `fields @maxMemoryUsed * @duration` <br> For metrics => [Click here](#General-query-for-getting-data-from-metrics) | It gives maximum compute-usage data for function | find data and convert it into GB-s unit |
 
 ## -- 11
 Time range params in every command and api
