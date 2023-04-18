@@ -4,11 +4,9 @@ Copyright © 2023 Manoj Sharma manoj.sharma@synectiks.com
 package commands
 
 import (
-	"fmt"
+	"github.com/Appkube-awsx/awsx-lambda/actuator"
 	"github.com/Appkube-awsx/awsx-lambda/authenticater"
-	"github.com/Appkube-awsx/awsx-lambda/client"
 	"github.com/Appkube-awsx/awsx-lambda/commands/lambdacmd"
-	"github.com/Appkube-awsx/awsx-lambda/controllers"
 	"github.com/spf13/cobra"
 	"log"
 )
@@ -27,15 +25,7 @@ var AwsxLambdaCmd = &cobra.Command{
 		all, _ := cmd.Flags().GetBool("all")
 
 		if authFlag {
-			lambdaClient := client.GetClient()
-
-			if all {
-				functionList := controllers.GetAllLambdaList(lambdaClient)
-				fmt.Println("List of all lambda functions", functionList)
-			} else {
-				functionList := controllers.GetLambdaList(lambdaClient, marker)
-				fmt.Println("List of by marker lambda functions", functionList)
-			}
+			actuator.LambdaListActuator(marker, all, authenticater.VaultUrl, authenticater.AccountId, authenticater.Region, authenticater.AcKey, authenticater.SecKey, authenticater.CrossAccountRoleArn, authenticater.ExternalId)
 		}
 	},
 }
