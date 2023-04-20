@@ -7,7 +7,7 @@ import (
 	"fmt"
 	"github.com/Appkube-awsx/awsx-lambda/authenticater"
 	"github.com/Appkube-awsx/awsx-lambda/client"
-	"github.com/Appkube-awsx/awsx-lambda/controllers"
+	"github.com/Appkube-awsx/awsx-lambda/services"
 	"github.com/spf13/cobra"
 )
 
@@ -23,7 +23,7 @@ var GetDetailOfErrorCmd = &cobra.Command{
 		if authFlag {
 			cloudClient := client.GetCloudWatchClient()
 			function, _ := cmd.Flags().GetString("function")
-			controllers.GetFunctionsErrDetail(cloudClient, function)
+			services.GetFunctionsErrDetail(cloudClient, function)
 		}
 
 	},

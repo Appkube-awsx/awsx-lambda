@@ -7,7 +7,7 @@ import (
 	"fmt"
 	"github.com/Appkube-awsx/awsx-lambda/authenticater"
 	"github.com/Appkube-awsx/awsx-lambda/client"
-	"github.com/Appkube-awsx/awsx-lambda/controllers"
+	"github.com/Appkube-awsx/awsx-lambda/services"
 	"github.com/spf13/cobra"
 )
 
@@ -23,7 +23,7 @@ var GetTotalNumberOfLambdaCmd = &cobra.Command{
 		if authFlag {
 			lambdaClient := client.GetClient()
 
-			totalNumber := len(controllers.GetAllLambdaList(lambdaClient))
+			totalNumber := len(services.GetAllLambdaList(lambdaClient))
 			fmt.Println("total number of lambda present in aws account in", authenticater.Region, "is:", totalNumber)
 		}
 	},

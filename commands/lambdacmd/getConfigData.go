@@ -7,7 +7,7 @@ import (
 	"fmt"
 	"github.com/Appkube-awsx/awsx-lambda/authenticater"
 	"github.com/Appkube-awsx/awsx-lambda/client"
-	"github.com/Appkube-awsx/awsx-lambda/controllers"
+	"github.com/Appkube-awsx/awsx-lambda/services"
 	"github.com/spf13/cobra"
 )
 
@@ -24,7 +24,7 @@ var GetConfigDataCmd = &cobra.Command{
 			lambdaClient := client.GetClient()
 
 			function, _ := cmd.Flags().GetString("function")
-			lambdaDetail := controllers.GetLambdaDetail(lambdaClient, function)
+			lambdaDetail := services.GetLambdaDetail(lambdaClient, function)
 			fmt.Println(lambdaDetail)
 		}
 	},

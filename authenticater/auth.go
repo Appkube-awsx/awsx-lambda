@@ -75,3 +75,18 @@ func RootCommandAuth(cmd *cobra.Command) bool {
 
 	return authFlag
 }
+
+func ApiAuth(vaultUrl string, accountId string, region string, acKey string, secKey string, crossAccountRoleArn string, externalId string) bool {
+
+	VaultUrl = vaultUrl
+	AccountId = accountId
+	Region = region
+	AcKey = acKey
+	SecKey = secKey
+	CrossAccountRoleArn = crossAccountRoleArn
+	ExternalId = externalId
+
+	authFlag := AuthenticateData(VaultUrl, AccountId, Region, AcKey, SecKey, CrossAccountRoleArn, ExternalId)
+
+	return authFlag
+}

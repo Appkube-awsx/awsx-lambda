@@ -4,9 +4,9 @@ Copyright © 2023 Manoj Sharma manoj.sharma@synectiks.com
 package commands
 
 import (
-	"github.com/Appkube-awsx/awsx-lambda/actuator"
 	"github.com/Appkube-awsx/awsx-lambda/authenticater"
 	"github.com/Appkube-awsx/awsx-lambda/commands/lambdacmd"
+	"github.com/Appkube-awsx/awsx-lambda/controllers"
 	"github.com/spf13/cobra"
 	"log"
 )
@@ -19,13 +19,18 @@ var AwsxLambdaCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		log.Println("Command lambda started")
 
+		// check for cli flags
 		authFlag := authenticater.RootCommandAuth(cmd)
 
 		marker := cmd.Flags().Lookup("marker").Value.String()
 		all, _ := cmd.Flags().GetBool("all")
 
 		if authFlag {
-			actuator.LambdaListActuator(marker, all, authenticater.VaultUrl, authenticater.AccountId, authenticater.Region, authenticater.AcKey, authenticater.SecKey, authenticater.CrossAccountRoleArn, authenticater.ExternalId)
+			if all {
+				controllers.AllLambdaListController(authenticater.VaultUrl, authenticater.AccountId, authenticater.Region, authenticater.AcKey, authenticater.SecKey, authenticater.CrossAccountRoleArn, authenticater.ExternalId)
+			} else {
+				controllers.LambdaListController(marker, authenticater.VaultUrl, authenticater.AccountId, authenticater.Region, authenticater.AcKey, authenticater.SecKey, authenticater.CrossAccountRoleArn, authenticater.ExternalId)
+			}
 		}
 	},
 }

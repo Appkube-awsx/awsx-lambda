@@ -6,7 +6,7 @@ package lambdacmd
 import (
 	"github.com/Appkube-awsx/awsx-lambda/authenticater"
 	"github.com/Appkube-awsx/awsx-lambda/client"
-	"github.com/Appkube-awsx/awsx-lambda/controllers"
+	"github.com/Appkube-awsx/awsx-lambda/services"
 	"github.com/spf13/cobra"
 )
 
@@ -26,9 +26,9 @@ var GetNumberOfErrorCmd = &cobra.Command{
 			function, _ := cmd.Flags().GetString("function")
 
 			if function != "" {
-				controllers.GetFunctionErrCount(cloudClient, function)
+				services.GetFunctionErrCount(cloudClient, function)
 			} else {
-				controllers.GetAllFunctionsErrCount(cloudClient, lambdaClient)
+				services.GetAllFunctionsErrCount(cloudClient, lambdaClient)
 			}
 		}
 
