@@ -47,7 +47,6 @@ func Execute() {
 
 func init() {
 	AwsxLambdaCmd.AddCommand(lambdacmd.GetConfigDataCmd)
-	AwsxLambdaCmd.AddCommand(lambdacmd.GetCostDataCmd)
 	AwsxLambdaCmd.AddCommand(lambdacmd.GetNumberOfErrorCmd)
 	AwsxLambdaCmd.AddCommand(lambdacmd.GetTotalNumberOfLambdaCmd)
 	AwsxLambdaCmd.AddCommand(lambdacmd.GetDetailOfErrorCmd)

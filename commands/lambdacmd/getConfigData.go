@@ -6,12 +6,11 @@ package lambdacmd
 import (
 	"fmt"
 	"github.com/Appkube-awsx/awsx-lambda/authenticater"
-	"github.com/Appkube-awsx/awsx-lambda/client"
-	"github.com/Appkube-awsx/awsx-lambda/services"
+	"github.com/Appkube-awsx/awsx-lambda/controllers"
 	"github.com/spf13/cobra"
 )
 
-// getConfigDataCmd represents the getConfigData command
+// GetConfigDataCmd represents the getConfigData command
 var GetConfigDataCmd = &cobra.Command{
 	Use:   "getConfigData",
 	Short: "A brief description of your command",
@@ -20,12 +19,10 @@ var GetConfigDataCmd = &cobra.Command{
 
 		authFlag := authenticater.ChildCommandAuth(cmd)
 
-		if authFlag {
-			lambdaClient := client.GetClient()
+		function, _ := cmd.Flags().GetString("function")
 
-			function, _ := cmd.Flags().GetString("function")
-			lambdaDetail := services.GetLambdaDetail(lambdaClient, function)
-			fmt.Println(lambdaDetail)
+		if authFlag {
+			controllers.LambdaDetailsController(function, authenticater.VaultUrl, authenticater.AccountId, authenticater.Region, authenticater.AcKey, authenticater.SecKey, authenticater.CrossAccountRoleArn, authenticater.ExternalId)
 		}
 	},
 }

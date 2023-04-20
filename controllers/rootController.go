@@ -11,10 +11,10 @@ import (
 // Controller for all lambda list
 func AllLambdaListController(vaultUrl string, accountId string, region string, acKey string, secKey string, crossAccountRoleArn string, externalId string) []*lambda.FunctionConfiguration {
 
+	// this is Api auth and compulsory for every controller
 	authenticater.ApiAuth(vaultUrl, accountId, region, acKey, secKey, crossAccountRoleArn, externalId)
 
 	lambdaClient := client.GetClient()
-
 	functionList := services.GetAllLambdaList(lambdaClient)
 	fmt.Println("List of all lambda functions", functionList)
 	return functionList
