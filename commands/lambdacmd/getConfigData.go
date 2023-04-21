@@ -5,6 +5,7 @@ package lambdacmd
 
 import (
 	"fmt"
+
 	"github.com/Appkube-awsx/awsx-lambda/authenticater"
 	"github.com/Appkube-awsx/awsx-lambda/controllers"
 	"github.com/spf13/cobra"
@@ -22,7 +23,7 @@ var GetConfigDataCmd = &cobra.Command{
 		function, _ := cmd.Flags().GetString("function")
 
 		if authFlag {
-			controllers.LambdaDetailsController(function, authenticater.VaultUrl, authenticater.AccountId, authenticater.Region, authenticater.AcKey, authenticater.SecKey, authenticater.CrossAccountRoleArn, authenticater.ExternalId)
+			controllers.LambdaDetails(function, authenticater.VaultUrl, authenticater.AccountId, authenticater.Region, authenticater.AcKey, authenticater.SecKey, authenticater.CrossAccountRoleArn, authenticater.ExternalId)
 		}
 	},
 }

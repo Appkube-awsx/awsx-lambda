@@ -4,11 +4,12 @@ Copyright © 2023 Manoj Sharma manoj.sharma@synectiks.com
 package commands
 
 import (
+	"log"
+
 	"github.com/Appkube-awsx/awsx-lambda/authenticater"
 	"github.com/Appkube-awsx/awsx-lambda/commands/lambdacmd"
 	"github.com/Appkube-awsx/awsx-lambda/controllers"
 	"github.com/spf13/cobra"
-	"log"
 )
 
 // AwsxCloudElementsCmd represents the base command when called without any subcommands
@@ -50,6 +51,7 @@ func init() {
 	AwsxLambdaCmd.AddCommand(lambdacmd.GetNumberOfErrorCmd)
 	AwsxLambdaCmd.AddCommand(lambdacmd.GetTotalNumberOfLambdaCmd)
 	AwsxLambdaCmd.AddCommand(lambdacmd.GetDetailOfErrorCmd)
+	AwsxLambdaCmd.AddCommand(lambdacmd.GetLatencyCmd)
 
 	AwsxLambdaCmd.Flags().String("marker", "", "marker for next list")
 	AwsxLambdaCmd.Flags().Bool("all", false, "to get all lambdas at once")
