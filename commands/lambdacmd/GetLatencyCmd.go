@@ -24,11 +24,7 @@ var GetLatencyCmd = &cobra.Command{
 		endTime, _ := cmd.Flags().GetString("endTime")
 
 		if authFlag {
-
-			controllers.GetLambadaLatencyTimeController(function, startTime, endTime, authenticater.VaultUrl, authenticater.AccountId, authenticater.Region, authenticater.AcKey, authenticater.SecKey, authenticater.CrossAccountRoleArn, authenticater.ExternalId)
-
-			// services.GetLambadaLatencyTime(cloudClient, function, startTime, endTime)
-
+			controllers.GetLambadaLatencyTimeController(function, startTime, endTime, authenticater.ClientAuth)
 		}
 
 	},

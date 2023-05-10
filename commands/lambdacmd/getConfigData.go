@@ -23,7 +23,7 @@ var GetConfigDataCmd = &cobra.Command{
 		function, _ := cmd.Flags().GetString("function")
 
 		if authFlag {
-			controllers.LambdaDetails(function, authenticater.VaultUrl, authenticater.AccountId, authenticater.Region, authenticater.AcKey, authenticater.SecKey, authenticater.CrossAccountRoleArn, authenticater.ExternalId)
+			controllers.LambdaDetails(function, authenticater.ClientAuth)
 		}
 	},
 }

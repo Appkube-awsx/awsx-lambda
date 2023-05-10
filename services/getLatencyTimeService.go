@@ -30,8 +30,6 @@ func GetLambadaLatencyTime(cloudClient *cloudwatchlogs.CloudWatchLogs, function 
 	durationCreationTimeInSeconds := durationCreationTime / 1000
 	creationTime := time.Unix(durationCreationTimeInSeconds, 0)
 	creationTimeString := creationTime.Format("2006-01-02 15:04:05.000000000 -0700 MST")
-	fmt.Println("creation time", creationTime)
-	fmt.Println(creationTimeString)
 
 	if err != nil {
 		log.Fatalln("Error: in getting event data", err)

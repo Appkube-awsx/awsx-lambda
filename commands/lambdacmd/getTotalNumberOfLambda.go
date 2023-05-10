@@ -19,7 +19,7 @@ var GetTotalNumberOfLambdaCmd = &cobra.Command{
 		authFlag := authenticater.ChildCommandAuth(cmd)
 
 		if authFlag {
-			controllers.LambdaGetTotalNumberOfLambda(authenticater.VaultUrl, authenticater.AccountId, authenticater.Region, authenticater.AcKey, authenticater.SecKey, authenticater.CrossAccountRoleArn, authenticater.ExternalId)
+			controllers.LambdaGetTotalNumberOfLambda(authenticater.ClientAuth)
 		}
 	},
 }

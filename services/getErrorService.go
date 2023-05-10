@@ -133,7 +133,7 @@ func GetFunctionErrCount(cloudClient *cloudwatchlogs.CloudWatchLogs, function st
 	fmt.Println("this is time", endTime)
 	//fmt.Println(endTime1)
 
-	query := `filter @message like /(?i)(Exception|error|fail|5dd)/
+	query := `filter @message like /(?i)(ERROR)/
 									| stats count() as ErrorCount`
 
 	logGroupName := fmt.Sprintf("/aws/lambda/%s", function)

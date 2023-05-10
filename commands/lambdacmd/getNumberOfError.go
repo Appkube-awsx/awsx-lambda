@@ -20,7 +20,7 @@ var GetNumberOfErrorCmd = &cobra.Command{
 		function, _ := cmd.Flags().GetString("function")
 
 		if authFlag {
-			controllers.LambdaGetNumberOfErrorController(function, authenticater.VaultUrl, authenticater.AccountId, authenticater.Region, authenticater.AcKey, authenticater.SecKey, authenticater.CrossAccountRoleArn, authenticater.ExternalId)
+			controllers.LambdaGetNumberOfErrorController(function, authenticater.ClientAuth)
 
 		}
 

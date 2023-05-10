@@ -28,9 +28,9 @@ var AwsxLambdaCmd = &cobra.Command{
 
 		if authFlag {
 			if all {
-				controllers.AllLambdaListController(authenticater.VaultUrl, authenticater.AccountId, authenticater.Region, authenticater.AcKey, authenticater.SecKey, authenticater.CrossAccountRoleArn, authenticater.ExternalId)
+				controllers.AllLambdaListController(authenticater.ClientAuth)
 			} else {
-				controllers.LambdaListController(marker, authenticater.VaultUrl, authenticater.AccountId, authenticater.Region, authenticater.AcKey, authenticater.SecKey, authenticater.CrossAccountRoleArn, authenticater.ExternalId)
+				controllers.LambdaListController(marker, authenticater.ClientAuth)
 			}
 		}
 	},
