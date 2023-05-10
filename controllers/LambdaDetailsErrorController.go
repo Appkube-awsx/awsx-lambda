@@ -13,9 +13,8 @@ func LambdaDetailsErrorController(function string, vaultUrl string, accountId st
 	// this is Api auth and compulsory for every controller
 	authenticater.ApiAuth(vaultUrl, accountId, region, acKey, secKey, crossAccountRoleArn, externalId)
 
-	lambdaClient := client.GetClient()
+	cloudClient := client.GetCloudWatchClient()
 
-	totalNumber := len(services.GetAllLambdaList(lambdaClient))
-	fmt.Println("total number of lambda present in aws account in", authenticater.Region, "is:", totalNumber)
-
+	detail := services.GetFunctionsErrDetail(cloudClient, function)
+	fmt.Println(detail)
 }

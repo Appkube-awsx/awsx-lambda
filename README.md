@@ -111,3 +111,11 @@ This command returns the configuration details of the specified lambda in JSON f
 
 
 ```TODO```
+
+
+## command for run test
+1. go to test file directory and run
+
+```
+go test -cover
+```

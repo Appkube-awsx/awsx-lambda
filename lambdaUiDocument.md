@@ -13,7 +13,7 @@
 ![lambda merked image](./img/Screenshot%202023-04-06%20163636.png)
 ![lambda merked image](./img/Screenshot%202023-04-07%20134003.png)
 
-# Analyser -> Error
+# Analyser -> Reliability
 ![lambda merked image](./img/Screenshot%202023-04-10%20132508.png)
 ![lambda merked image](./img/Screenshot%202023-04-11%20172440.png)
 
@@ -23,6 +23,17 @@
 # Analyser -> Resources
 ![lambda merked image](./img/Screenshot%202023-04-13%20143042.png)
 ![lambda merked image](./img/Screenshot%202023-04-13%20170403.png)
+
+# Analyser -> performance
+![lambda merked image](./img/Screenshot%202023-04-21%20132230.png)
+
+# Analyser -> End-usage
+![lambda merked image](./img/Screenshot%202023-04-24%20133447.png)
+
+# Analyser -> Availability
+![lambda merked image](./img/Screenshot%202023-04-25%20114328.png)
+
+
 
 
 | Section no. | Data Format(Api/Metrics/Log/Trace) |  Source detail | Description | Logic |
@@ -72,6 +83,9 @@
 | 52 | metrics | [Click here](#General-query-for-getting-data-from-metrics) | It gives maximum computer-usage data for graph | Find max memory for every fucntion and filter top 5 |
 | 53 | CWL/metrics |  Q => `stats avg(@maxMemoryUsed * @duration)` <br> For metrics => [Click here](#General-query-for-getting-data-from-metrics) | It gives average compute-usage for function | find data and convert it into GB-s unit |
 | 55 | CWL | average duration: Q => `stats avg(@duration)` <br> Billed duration =>  Q => `stats avg(@billedDuration)` <br>  | It gives average duration vs billed duration | find data for all fucntions and find top functions |
+| 56 | Custom Api | Api -> `/lambda/region` param=`function=<function>` <br> Cli -> `lambda region` <br> | It gives region for given function or for all if function name is not given | get fucntion config and get region from arn |
+| 57 | Custom api | -- | It gives idle function as per project | get data from CMDB |
+
 
 ## -- 11
 Time range params in every command and api
