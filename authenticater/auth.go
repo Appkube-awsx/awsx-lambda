@@ -56,7 +56,7 @@ func AuthenticateData(vaultUrl string, vaultToken string, accountNo string, regi
 		}
 		return true, &ClientAuth
 	} else {
-		log.Fatal("AWS credentials like accessKey/secretKey/region/crossAccountRoleArn/externalId not provided. Program exit")
+		log.Println("Neither vaultUrl/vaultToken/accountId nor aws accessKey/secretKey/region/crossAccountRoleArn/externalId provided. Program exit")
 		return false, nil
 	}
 }
@@ -121,8 +121,8 @@ func ApiAuth(vaultUrl string, vaultToken string, accountNo string, region string
 
 	authFlag, clientAuth := AuthenticateData(vaultUrl, vaultToken, accountNo, region, acKey, secKey, crossAccountRoleArn, externalId)
 
-	if !authFlag {
-		log.Fatalln("authentication error")
-	}
+	//if !authFlag {
+	//	log.Fatalln("authentication error")
+	//}
 	return authFlag, clientAuth
 }
