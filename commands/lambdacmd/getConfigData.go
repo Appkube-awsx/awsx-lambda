@@ -18,12 +18,12 @@ var GetConfigDataCmd = &cobra.Command{
 	Long:  ``,
 	Run: func(cmd *cobra.Command, args []string) {
 
-		authFlag := authenticater.ChildCommandAuth(cmd)
+		authFlag, clientAuth := authenticater.ChildCommandAuth(cmd)
 
 		function, _ := cmd.Flags().GetString("function")
 
 		if authFlag {
-			controllers.LambdaDetails(function, authenticater.ClientAuth)
+			controllers.LambdaDetails(function, *clientAuth)
 		}
 	},
 }

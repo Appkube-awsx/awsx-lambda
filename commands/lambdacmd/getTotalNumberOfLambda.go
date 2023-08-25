@@ -16,10 +16,10 @@ var GetTotalNumberOfLambdaCmd = &cobra.Command{
 	Long:  ``,
 	Run: func(cmd *cobra.Command, args []string) {
 
-		authFlag := authenticater.ChildCommandAuth(cmd)
+		authFlag, clientAuth := authenticater.ChildCommandAuth(cmd)
 
 		if authFlag {
-			controllers.LambdaGetTotalNumberOfLambda(authenticater.ClientAuth)
+			controllers.LambdaGetTotalNumberOfLambda(*clientAuth)
 		}
 	},
 }

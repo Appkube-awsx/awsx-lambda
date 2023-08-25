@@ -18,13 +18,13 @@ var GetLatencyCmd = &cobra.Command{
 	Long:  ``,
 	Run: func(cmd *cobra.Command, args []string) {
 
-		authFlag := authenticater.ChildCommandAuth(cmd)
+		authFlag, clientAuth := authenticater.ChildCommandAuth(cmd)
 		function, _ := cmd.Flags().GetString("function")
 		startTime, _ := cmd.Flags().GetString("startTime")
 		endTime, _ := cmd.Flags().GetString("endTime")
 
 		if authFlag {
-			controllers.GetLambadaLatencyTimeController(function, startTime, endTime, authenticater.ClientAuth)
+			controllers.GetLambadaLatencyTimeController(function, startTime, endTime, *clientAuth)
 		}
 
 	},

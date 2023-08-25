@@ -3,7 +3,6 @@ package controllers
 import (
 	"fmt"
 	"github.com/Appkube-awsx/awsx-common/client"
-	"github.com/Appkube-awsx/awsx-lambda/authenticater"
 	"github.com/Appkube-awsx/awsx-lambda/services"
 	"github.com/aws/aws-sdk-go/service/lambda"
 )
@@ -12,7 +11,7 @@ import (
 func AllLambdaListController(auth client.Auth) []*lambda.FunctionConfiguration {
 
 	// This is Api auth and compulsory for every controller
-	authenticater.ApiAuth(auth)
+	//authenticater.ApiAuth(auth) // No need to call this again. client.Auth is already instantiated at the time of authentication
 
 	// Lambda client from awsx-common repo
 	lambdaClient := client.GetClient(auth, client.LAMBDA_CLIENT).(*lambda.Lambda)
@@ -26,7 +25,7 @@ func AllLambdaListController(auth client.Auth) []*lambda.FunctionConfiguration {
 func LambdaListController(marker string, auth client.Auth) *lambda.ListFunctionsOutput {
 
 	// This is Api auth and compulsory for every controller
-	authenticater.ApiAuth(auth)
+	//authenticater.ApiAuth(auth) // No need to call this again. client.Auth is already instantiated at the time of authentication
 
 	lambdaClient := client.GetClient(auth, client.LAMBDA_CLIENT).(*lambda.Lambda)
 

@@ -11,71 +11,118 @@ import (
 var ClientAuth client.Auth
 
 // AuthenticateData -> For account validation
-func AuthenticateData(vaultUrl string, accountNo string, region string, acKey string, secKey string, crossAccountRoleArn string, externalId string) bool {
-
-	if vaultUrl != "" && accountNo != "" {
-		if region == "" {
-			log.Fatalln("Zone not provided. Program exit")
-			return false
+func AuthenticateData(vaultUrl string, vaultToken string, accountNo string, region string, acKey string, secKey string, crossAccountRoleArn string, externalId string) (bool, *client.Auth) {
+	if region == "" {
+		log.Fatalln("Region not provided. Program exit")
+		return false, nil
+	}
+	if vaultUrl != "" {
+		if accountNo == "" {
+			log.Fatalln("Account key not provided. Program exit")
+			return false, nil
 		}
-		log.Println("Getting account details")
-		data, err := vault.GetAccountDetails(vaultUrl, accountNo)
+		if vaultToken == "" {
+			log.Println("Vault token not provided. Program exit")
+			return false, nil
+		}
+		log.Println("Getting account details from vault")
+		vaultResp, err := vault.GetAccountDetails(vaultUrl, vaultToken, accountNo)
 		if err != nil {
-			log.Println("Error in calling the account details api. \n", err)
-			return false
+			log.Println("Error in calling vault api to get account details. \n", err)
+			return false, nil
 		}
-		if data.AccessKey == "" || data.SecretKey == "" || data.CrossAccountRoleArn == "" {
-			log.Println("Account details not found.")
-			return false
+		if vaultResp.Data.AccessKey == "" || vaultResp.Data.SecretKey == "" || vaultResp.Data.CrossAccountRoleArn == "" || vaultResp.Data.ExternalId == "" {
+			log.Println("Account details not found in vault.")
+			return false, nil
 		}
-		return true
 
-	} else if region != "" && acKey != "" && secKey != "" && crossAccountRoleArn != "" && externalId != "" {
-		return true
+		ClientAuth := client.Auth{
+			Region:              region,
+			CrossAccountRoleArn: vaultResp.Data.CrossAccountRoleArn,
+			AccessKey:           vaultResp.Data.AccessKey,
+			SecretKey:           vaultResp.Data.SecretKey,
+			ExternalId:          vaultResp.Data.ExternalId,
+		}
+
+		return true, &ClientAuth
+
+	} else if acKey != "" && secKey != "" && crossAccountRoleArn != "" && externalId != "" {
+		ClientAuth := client.Auth{
+			Region:              region,
+			CrossAccountRoleArn: crossAccountRoleArn,
+			AccessKey:           acKey,
+			SecretKey:           secKey,
+			ExternalId:          externalId,
+		}
+		return true, &ClientAuth
 	} else {
-		log.Fatal("AWS credentials like accesskey/secretkey/region/crossAccountRoleArn/externalId not provided. Program exit")
-		return false
+		log.Fatal("AWS credentials like accessKey/secretKey/region/crossAccountRoleArn/externalId not provided. Program exit")
+		return false, nil
 	}
 }
 
 // ChildCommandAuth -> For validation of child command
-func ChildCommandAuth(cmd *cobra.Command) bool {
+func ChildCommandAuth(cmd *cobra.Command) (bool, *client.Auth) {
 
-	ClientAuth = client.Auth{
-		cmd.Parent().PersistentFlags().Lookup("zone").Value.String(),
-		cmd.Parent().PersistentFlags().Lookup("crossAccountRoleArn").Value.String(),
-		cmd.Parent().PersistentFlags().Lookup("accessKey").Value.String(),
-		cmd.Parent().PersistentFlags().Lookup("secretKey").Value.String(),
-		cmd.Parent().PersistentFlags().Lookup("externalId").Value.String(),
-	}
-	authFlag := AuthenticateData("", "", ClientAuth.Region, ClientAuth.AccessKey, ClientAuth.SecretKey, ClientAuth.CrossAccountRoleArn, ClientAuth.ExternalId)
+	//ClientAuth = client.Auth{
+	//	cmd.Parent().PersistentFlags().Lookup("vaultUrl").Value.String(),
+	//	cmd.Parent().PersistentFlags().Lookup("vaultToken").Value.String(),
+	//	cmd.Parent().PersistentFlags().Lookup("accountId").Value.String(),
+	//	cmd.Parent().PersistentFlags().Lookup("zone").Value.String(),
+	//	cmd.Parent().PersistentFlags().Lookup("crossAccountRoleArn").Value.String(),
+	//	cmd.Parent().PersistentFlags().Lookup("accessKey").Value.String(),
+	//	cmd.Parent().PersistentFlags().Lookup("secretKey").Value.String(),
+	//	cmd.Parent().PersistentFlags().Lookup("externalId").Value.String(),
+	//}
+	vaultUrl := cmd.Parent().PersistentFlags().Lookup("vaultUrl").Value.String()
+	vaultToken := cmd.Parent().PersistentFlags().Lookup("vaultToken").Value.String()
+	accountId := cmd.Parent().PersistentFlags().Lookup("accountId").Value.String()
+	zone := cmd.Parent().PersistentFlags().Lookup("zone").Value.String()
+	accessKey := cmd.Parent().PersistentFlags().Lookup("accessKey").Value.String()
+	secretKey := cmd.Parent().PersistentFlags().Lookup("secretKey").Value.String()
+	crossAccountRoleArn := cmd.Parent().PersistentFlags().Lookup("crossAccountRoleArn").Value.String()
+	externalId := cmd.Parent().PersistentFlags().Lookup("externalId").Value.String()
+	authFlag, clientAuth := AuthenticateData(vaultUrl, vaultToken, accountId, zone, accessKey, secretKey, crossAccountRoleArn, externalId)
 
-	return authFlag
+	return authFlag, clientAuth
 }
 
 // RootCommandAuth -> For validation of parent command
-func RootCommandAuth(cmd *cobra.Command) bool {
+func RootCommandAuth(cmd *cobra.Command) (bool, *client.Auth) {
 
-	ClientAuth = client.Auth{
-		cmd.PersistentFlags().Lookup("zone").Value.String(),
-		cmd.PersistentFlags().Lookup("crossAccountRoleArn").Value.String(),
-		cmd.PersistentFlags().Lookup("accessKey").Value.String(),
-		cmd.PersistentFlags().Lookup("secretKey").Value.String(),
-		cmd.PersistentFlags().Lookup("externalId").Value.String(),
-	}
+	//ClientAuth = client.Auth{
+	//	cmd.PersistentFlags().Lookup("vaultUrl").Value.String(),
+	//	cmd.PersistentFlags().Lookup("vaultToken").Value.String(),
+	//	cmd.PersistentFlags().Lookup("accountId").Value.String(),
+	//	cmd.PersistentFlags().Lookup("zone").Value.String(),
+	//	cmd.PersistentFlags().Lookup("crossAccountRoleArn").Value.String(),
+	//	cmd.PersistentFlags().Lookup("accessKey").Value.String(),
+	//	cmd.PersistentFlags().Lookup("secretKey").Value.String(),
+	//	cmd.PersistentFlags().Lookup("externalId").Value.String(),
+	//}
 
-	authFlag := AuthenticateData("", "", ClientAuth.Region, ClientAuth.AccessKey, ClientAuth.SecretKey, ClientAuth.CrossAccountRoleArn, ClientAuth.ExternalId)
+	vaultUrl := cmd.PersistentFlags().Lookup("vaultUrl").Value.String()
+	vaultToken := cmd.PersistentFlags().Lookup("vaultToken").Value.String()
+	accountId := cmd.PersistentFlags().Lookup("accountId").Value.String()
+	zone := cmd.PersistentFlags().Lookup("zone").Value.String()
+	accessKey := cmd.PersistentFlags().Lookup("accessKey").Value.String()
+	secretKey := cmd.PersistentFlags().Lookup("secretKey").Value.String()
+	crossAccountRoleArn := cmd.PersistentFlags().Lookup("crossAccountRoleArn").Value.String()
+	externalId := cmd.PersistentFlags().Lookup("externalId").Value.String()
+	authFlag, clientAuth := AuthenticateData(vaultUrl, vaultToken, accountId, zone, accessKey, secretKey, crossAccountRoleArn, externalId)
 
-	return authFlag
+	//authFlag := AuthenticateData(ClientAuth.VaultUrl, ClientAuth.VaultToken, ClientAuth.VaultKey, ClientAuth.Region, ClientAuth.AccessKey, ClientAuth.SecretKey, ClientAuth.CrossAccountRoleArn, ClientAuth.ExternalId)
+
+	return authFlag, clientAuth
 }
 
-// ApiAuth -> for authentication of api request
-func ApiAuth(auth client.Auth) bool {
+// ApiAuth -> for authentication of rest-api request
+func ApiAuth(vaultUrl string, vaultToken string, accountNo string, region string, acKey string, secKey string, crossAccountRoleArn string, externalId string) (bool, *client.Auth) {
 
-	authFlag := AuthenticateData("", "", auth.Region, auth.AccessKey, auth.SecretKey, auth.CrossAccountRoleArn, auth.ExternalId)
+	authFlag, clientAuth := AuthenticateData(vaultUrl, vaultToken, accountNo, region, acKey, secKey, crossAccountRoleArn, externalId)
 
 	if !authFlag {
 		log.Fatalln("authentication error")
 	}
-	return authFlag
+	return authFlag, clientAuth
 }

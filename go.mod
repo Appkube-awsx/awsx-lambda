@@ -3,7 +3,7 @@ module github.com/Appkube-awsx/awsx-lambda
 go 1.19
 
 require (
-	github.com/Appkube-awsx/awsx-common v1.0.2
+	github.com/Appkube-awsx/awsx-common v1.0.9
 	github.com/aws/aws-sdk-go v1.44.180
 	github.com/spf13/cobra v1.6.1
 )

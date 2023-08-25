@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"github.com/Appkube-awsx/awsx-common/client"
 	"os"
 	"testing"
 )
@@ -13,10 +14,18 @@ var (
 	zone      = "us-east-1"
 )
 
+var auth = client.Auth{
+	Region:              "us-east-1",
+	CrossAccountRoleArn: os.Getenv("AWS_CROSS_ARN"),
+	AccessKey:           os.Getenv("AWS_ACCKEY"),
+	SecretKey:           os.Getenv("AWS_SECKEY"),
+	ExternalId:          os.Getenv("AWS_EXTERNALID"),
+}
+
 // Test for get All lambda list
 func TestAllLambdaList(t *testing.T) {
 
-	result := AllLambdaListController("", "", zone, acKey, secKey, crossRole, external)
+	result := AllLambdaListController(auth)
 
 	if result != nil {
 		t.Log("Test passed for all lambda list")
@@ -28,13 +37,13 @@ func TestAllLambdaList(t *testing.T) {
 // Test for get lambda list
 func TestLambdaList(t *testing.T) {
 
-	result := LambdaListController("", "", "", zone, acKey, secKey, crossRole, external)
+	result := LambdaListController("", auth)
 
 	if result.NextMarker == nil {
 		t.Log("Test failed for lambda list")
 	}
 
-	result1 := LambdaListController(*result.NextMarker, "", "", zone, acKey, secKey, crossRole, external)
+	result1 := LambdaListController(*result.NextMarker, auth)
 
 	if result1 != nil {
 		t.Log("Test passed for lambda list")
@@ -46,7 +55,7 @@ func TestLambdaList(t *testing.T) {
 // Test for get config data of lambda
 func TestConfigDataController(t *testing.T) {
 
-	result := LambdaDetails("testfunction", "", "", zone, acKey, secKey, crossRole, external)
+	result := LambdaDetails("testfunction", auth)
 
 	if result != nil {
 		t.Log("Test passed for lambda details")
@@ -58,7 +67,7 @@ func TestConfigDataController(t *testing.T) {
 // Test for lambda latency
 func TestLatencyController(t *testing.T) {
 
-	result := LambdaDetails("testfunction", "", "", zone, acKey, secKey, crossRole, external)
+	result := LambdaDetails("testfunction", auth)
 
 	if result != nil {
 		t.Log("Test passed for lambda details")
@@ -70,7 +79,7 @@ func TestLatencyController(t *testing.T) {
 // Test for number if error
 func TestNumberOfError(t *testing.T) {
 
-	result := LambdaGetNumberOfErrorController("testfunction", "", "", zone, acKey, secKey, crossRole, external)
+	result := LambdaGetNumberOfErrorController("testfunction", auth)
 
 	if result >= 0 {
 		t.Log("Test passed for error count for a function")
@@ -82,7 +91,7 @@ func TestNumberOfError(t *testing.T) {
 // Test for total number of lambdas
 func TestTotalNumberOfLambdas(t *testing.T) {
 
-	result := LambdaGetTotalNumberOfLambda("", "", zone, acKey, secKey, crossRole, external)
+	result := LambdaGetTotalNumberOfLambda(auth)
 
 	if result >= 0 {
 		t.Log("Test passed for total number of lambdas")

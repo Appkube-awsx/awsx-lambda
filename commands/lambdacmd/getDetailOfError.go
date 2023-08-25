@@ -18,11 +18,11 @@ var GetDetailOfErrorCmd = &cobra.Command{
 	Long:  ``,
 	Run: func(cmd *cobra.Command, args []string) {
 
-		authFlag := authenticater.ChildCommandAuth(cmd)
+		authFlag, clientAuth := authenticater.ChildCommandAuth(cmd)
 		function, _ := cmd.Flags().GetString("function")
 
 		if authFlag {
-			controllers.LambdaDetailsErrorController(function, authenticater.ClientAuth)
+			controllers.LambdaDetailsErrorController(function, *clientAuth)
 
 		}
 

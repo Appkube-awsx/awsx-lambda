@@ -21,16 +21,16 @@ var AwsxLambdaCmd = &cobra.Command{
 		log.Println("Command lambda started")
 
 		// check for cli flags
-		authFlag := authenticater.RootCommandAuth(cmd)
+		authFlag, clientAuth := authenticater.RootCommandAuth(cmd)
 
 		marker := cmd.Flags().Lookup("marker").Value.String()
 		all, _ := cmd.Flags().GetBool("all")
 
 		if authFlag {
 			if all {
-				controllers.AllLambdaListController(authenticater.ClientAuth)
+				controllers.AllLambdaListController(*clientAuth)
 			} else {
-				controllers.LambdaListController(marker, authenticater.ClientAuth)
+				controllers.LambdaListController(marker, *clientAuth)
 			}
 		}
 	},
@@ -57,6 +57,7 @@ func init() {
 	AwsxLambdaCmd.Flags().Bool("all", false, "to get all lambdas at once")
 
 	AwsxLambdaCmd.PersistentFlags().String("vaultUrl", "", "vault end point")
+	AwsxLambdaCmd.PersistentFlags().String("vaultToken", "", "vault token")
 	AwsxLambdaCmd.PersistentFlags().String("accountId", "", "aws account number")
 	AwsxLambdaCmd.PersistentFlags().String("zone", "", "aws region")
 	AwsxLambdaCmd.PersistentFlags().String("accessKey", "", "aws access key")

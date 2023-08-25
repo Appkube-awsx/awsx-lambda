@@ -58,7 +58,7 @@ Example:
 
     awsx-lambda --vaultUrl https://mykms.us-west-2.amazonaws.com/123456 --accountId 123456789012 
   
-    awsx-lambda --zone us-west-2 --accessKey AKIAIOSFODNN7EXAMPLE --secretKey wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY --crossAccountRoleArn arn:aws:iam::123456789012:role/crossAccountRole
+    awsx-lambda --zone us-west-2 --accessKey ########## --secretKey ############### --crossAccountRoleArn arn:aws:iam::123456789012:role/crossAccountRole
 
 ## Get lambda Configuration
 
