@@ -11,7 +11,7 @@ import (
 func AllLambdaListController(auth client.Auth) []*lambda.FunctionConfiguration {
 
 	// This is Api auth and compulsory for every controller
-	//authenticater.ApiAuth(auth) // No need to call this again. client.Auth is already instantiated at the time of authentication
+	//authenticate.ApiAuth(auth) // No need to call this again. client.Auth is already instantiated at the time of authentication
 
 	// Lambda client from awsx-common repo
 	lambdaClient := client.GetClient(auth, client.LAMBDA_CLIENT).(*lambda.Lambda)
@@ -25,7 +25,7 @@ func AllLambdaListController(auth client.Auth) []*lambda.FunctionConfiguration {
 func LambdaListController(marker string, auth client.Auth) *lambda.ListFunctionsOutput {
 
 	// This is Api auth and compulsory for every controller
-	//authenticater.ApiAuth(auth) // No need to call this again. client.Auth is already instantiated at the time of authentication
+	//authenticate.ApiAuth(auth) // No need to call this again. client.Auth is already instantiated at the time of authentication
 
 	lambdaClient := client.GetClient(auth, client.LAMBDA_CLIENT).(*lambda.Lambda)
 

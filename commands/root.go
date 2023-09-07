@@ -6,7 +6,7 @@ package commands
 import (
 	"log"
 
-	"github.com/Appkube-awsx/awsx-lambda/authenticater"
+	"github.com/Appkube-awsx/awsx-common/authenticate"
 	"github.com/Appkube-awsx/awsx-lambda/commands/lambdacmd"
 	"github.com/Appkube-awsx/awsx-lambda/controllers"
 	"github.com/spf13/cobra"
@@ -21,8 +21,11 @@ var AwsxLambdaCmd = &cobra.Command{
 		log.Println("Command lambda started")
 
 		// check for cli flags
-		authFlag, clientAuth := authenticater.RootCommandAuth(cmd)
-
+		authFlag, clientAuth, err := authenticate.CommandAuth(cmd)
+		if err != nil {
+			cmd.Help()
+			return
+		}
 		marker := cmd.Flags().Lookup("marker").Value.String()
 		all, _ := cmd.Flags().GetBool("all")
 

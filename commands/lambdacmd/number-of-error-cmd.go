@@ -4,7 +4,7 @@ Copyright © 2023 NAME HERE <EMAIL ADDRESS>
 package lambdacmd
 
 import (
-	"github.com/Appkube-awsx/awsx-lambda/authenticater"
+	"github.com/Appkube-awsx/awsx-common/authenticate"
 	"github.com/Appkube-awsx/awsx-lambda/controllers"
 	"github.com/spf13/cobra"
 )
@@ -16,7 +16,11 @@ var GetNumberOfErrorCmd = &cobra.Command{
 	Long:  ``,
 	Run: func(cmd *cobra.Command, args []string) {
 
-		authFlag, clientAuth := authenticater.ChildCommandAuth(cmd)
+		authFlag, clientAuth, err := authenticate.CommandAuth(cmd)
+		if err != nil {
+			cmd.Help()
+			return
+		}
 		function, _ := cmd.Flags().GetString("function")
 
 		if authFlag {

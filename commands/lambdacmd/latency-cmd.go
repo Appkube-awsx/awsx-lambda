@@ -6,7 +6,7 @@ package lambdacmd
 import (
 	"fmt"
 
-	"github.com/Appkube-awsx/awsx-lambda/authenticater"
+	"github.com/Appkube-awsx/awsx-common/authenticate"
 	"github.com/Appkube-awsx/awsx-lambda/controllers"
 	"github.com/spf13/cobra"
 )
@@ -18,7 +18,11 @@ var GetLatencyCmd = &cobra.Command{
 	Long:  ``,
 	Run: func(cmd *cobra.Command, args []string) {
 
-		authFlag, clientAuth := authenticater.ChildCommandAuth(cmd)
+		authFlag, clientAuth, err := authenticate.CommandAuth(cmd)
+		if err != nil {
+			cmd.Help()
+			return
+		}
 		function, _ := cmd.Flags().GetString("function")
 		startTime, _ := cmd.Flags().GetString("startTime")
 		endTime, _ := cmd.Flags().GetString("endTime")

@@ -10,7 +10,7 @@ import (
 func LambdaDetails(function string, auth client.Auth) *lambda.GetFunctionOutput {
 
 	// this is Api auth and compulsory for every controller
-	//authenticater.ApiAuth(auth) // No need to call this again. client.Auth is already instantiated at the time of authentication
+	//authenticate.ApiAuth(auth) // No need to call this again. client.Auth is already instantiated at the time of authentication
 
 	// Lambda client
 	lambdaClient := client.GetClient(auth, client.LAMBDA_CLIENT).(*lambda.Lambda)
