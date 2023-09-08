@@ -23,14 +23,17 @@ https://github.com/Appkube-awsx/awsx#how-to-write-a-plugin-subcommand
 It has detailed instruction on how to write a subcommand plugin , build / test / debug  / publish and integrate into the main commmand.
 
 # How to build / Test
-            go run main.go
-                - Program will print Calling aws-lambda on console 
+            go run .\main.go --all=true --zone=<zone> --crossAccountRoleArn=<crossAccountRoleArn> --accessKey=<accessKey> --secretKey=<secretKey> --externalId=<externalId>
+            OR
+            go run .\main.go --all=true --zone=<zone> --vaultURL=<vaultURL> --vaultToken=<vaultToken> --accountId=<accountId>
+            
+                - Program will list of all the lambdas on console 
 
             Another way of testing is by running go install command
             go install
             - go install command creates an exe with the name of the module (e.g. awsx-lambda) and save it in the GOPATH
             - Now we can execute this command on command prompt as below
-            awsx-lambda --vaultURL=vault.dummy.net --accountId=xxxxxxxxxx --zone=us-west-2
+            awsx-lambda --zone <zone> --vaultURL <vaultURL> --vaultToken <vaultToken> --accountId <accountId>
 
 
 # How it works
@@ -41,9 +44,9 @@ The `lambda` command-line interface (CLI) is a tool for managing lambda. This do
 
 To list all the lambda in an account, run the following command:
 
-    awsx-lambda --zone <zone> --accessKey <accessKey> --secretKey <secretKey> --crossAccountRoleArn <crossAccountRoleArn>
+    awsx-lambda --all=true --zone=<zone> --accessKey=<accessKey> --secretKey=<secretKey> --crossAccountRoleArn=<crossAccountRoleArn> --externalId=<externalId>
   
-    awsx-lambda --vaultUrl <vaultUrl> --accountId <accountId> 
+    awsx-lambda --all=true --zone=<zone> --vaultUrl=<vaultUrl> --vaultToken=<vaultToken> --accountId=<accountId> 
 
 
 where:
@@ -52,36 +55,38 @@ where:
 - `--zone` specifies the AWS region where the lambda is located.
 - `--accessKey` specifies the AWS access key to use for authentication.
 - `--secretKey` specifies the AWS secret key to use for authentication.
-- `--crossAccountRoleArn` specifies the Amazon Resource Name (ARN) of the role that allows access to a lambda in another account. This is an optional parameter.
+- `--crossAccountRoleArn` specifies the Amazon Resource Name (ARN) of the role that allows access to a lambda in another account.
+- `--externalId` specifies external id of the role that allows access to a lambda in another account.
 
 Example:
 
-    awsx-lambda --vaultUrl https://mykms.us-west-2.amazonaws.com/123456 --accountId 123456789012 
+    awsx-lambda --all true --zone <zone> --vaultUrl <vaultUrl> --vaultToken <vaultToken> --accountId <accountId> 
   
-    awsx-lambda --zone us-west-2 --accessKey ########## --secretKey ############### --crossAccountRoleArn arn:aws:iam::123456789012:role/crossAccountRole
+    awsx-lambda --all true --zone <zone> --accessKey <accessKey> --secretKey <secretKey> --crossAccountRoleArn <crossAccountRoleArn> --externalId <externalId>
 
 ## Get lambda Configuration
 
 To retrieve the configuration details of a specific lambda, run the following command:
 
-    awsx-lambda getConfigData -f <lambda> --zone <zone> --accessKey <accessKey> --secretKey <secretKey> --crossAccountRoleArn <crossAccountRoleArn>
-   
-    awsx-lambda getConfigData -f <lambda> --vaultUrl <vaultUrl> --accountId <accountId> 
+    awsx-lambda getConfigData -f <lambda> --zone <zone> --crossAccountRoleArn <crossAccountRoleArn> --accessKey <accessKey> --secretKey <secretKey> --externalId <externalId>
+
+    awsx-lambda getConfigData -f <lambda> --zone <zone> --vaultUrl <vaultUrl> --vaultToken <vaultToken> --accountId <accountId> 
 
 where:
 - `-f` or `--func` is the shorthand for specifying the name of the lambda. This parameter is mandatory.
-- `--vaultUrl` specifies the URL of the AWS Key Management Service (KMS) customer master key (CMK) that you want to use to encrypt a lambda. This is an optional parameter. 
+- `--vaultUrl` specifies the URL of the AWS Key Management Service (KMS) customer master key (CMK) that you want to use to encrypt a lambda. 
 - `--accountId` specifies the AWS account ID that the lambda belongs to.
 - `--zone` specifies the AWS region where the lambda is located.
 - `--accessKey` specifies the AWS access key to use for authentication.
 - `--secretKey` specifies the AWS secret key to use for authentication.
-- `--crossAccountRoleArn` specifies the Amazon Resource Name (ARN) of the role that allows access to a lambda in another account. This is an optional parameter.
+- `--crossAccountRoleArn` specifies the Amazon Resource Name (ARN) of the role that allows access to a lambda in another account.
+- `--externalId` specifies external id of the role that allows access to a lambda in another account.
 
 Example:
 
-    awsx-lambda getConfigData -f my-lambda --vaultUrl https://mykms.us-west-2.amazonaws.com/123456 --accountId 123456789012 
+    awsx-lambda getConfigData -f <lambda> --zone <zone> --vaultUrl <vaultUrl> --vaultToken <vaultToken> --accountId <accountId> 
  
-    awsx-lambda getConfigData -f my-lambda --zone us-west-2 --accessKey AKIAIOSFODNN7EXAMPLE --secretKey wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY --crossAccountRoleArn arn:aws:iam::123456789012:role/crossAccountRole
+    awsx-lambda getConfigData -f <lambda> --zone <zone> --accessKey <accessKey> --secretKey <secretKey> --crossAccountRoleArn <crossAccountRoleArn> --externalId <externalId>
 
 This command returns the configuration details of the specified lambda in JSON format.
 
