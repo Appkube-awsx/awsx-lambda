@@ -18,6 +18,7 @@ func LambdaGetTotalNumberOfLambda(auth client.Auth) int {
 
 	totalNumber := len(services.GetAllLambdaList(lambdaClient))
 
-	fmt.Println("total number of lambda present in aws account in", auth.Region, "is:", totalNumber)
+	//fmt.Println("total number of lambda present in aws account in", auth.Region, "is:", totalNumber)
+	fmt.Println("total lambda: ", totalNumber, ", region: ", auth.Region, ", account no: ", auth.CrossAccountRoleArn)
 	return totalNumber
 }

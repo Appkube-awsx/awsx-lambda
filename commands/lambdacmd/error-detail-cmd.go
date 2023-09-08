@@ -14,11 +14,11 @@ import (
 // getConfigDataCmd represents the getConfigData command
 var GetDetailOfErrorCmd = &cobra.Command{
 	Use:   "errorDetail",
-	Short: "to get details of error in lambda",
-	Long:  ``,
+	Short: "lambda error details",
+	Long:  `get error details of lambda function`,
 	Run: func(cmd *cobra.Command, args []string) {
 
-		authFlag, clientAuth, err := authenticate.CommandAuth(cmd)
+		authFlag, clientAuth, err := authenticate.SubCommandAuth(cmd)
 		if err != nil {
 			cmd.Help()
 			return

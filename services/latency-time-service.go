@@ -80,13 +80,13 @@ func GetLambadaLatencyTime(cloudClient *cloudwatchlogs.CloudWatchLogs, function 
 	query := `stats avg(@duration)`
 
 	result, err := utils.GetQueryData(cloudClient, logGroupName, up_startTime, up_endTime, query)
-	fmt.Println("This si result", result)
+	//fmt.Println("This is result", result)
 
 	if err != nil {
 		return "", 0, err
 	}
 
-	fmt.Println("Result json", result)
+	fmt.Println("Result json: ", result)
 	// fmt.Println("Avg latency of ", logGroupName, "is", *result.Results[0][0].Value, "ms")
 	fmt.Println()
 

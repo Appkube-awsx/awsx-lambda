@@ -40,7 +40,7 @@ func GetAllLambdaList(lambdaClient *lambda.Lambda) []*lambda.FunctionConfigurati
 		functionList = GetLambdaList(lambdaClient, *functionList.NextMarker)
 		allFunctions = append(allFunctions, functionList.Functions...)
 		marker = functionList.NextMarker
-		fmt.Println("Functions got till now:: ", len(allFunctions))
+		fmt.Println("Lambda functions got till now:: ", len(allFunctions))
 	}
 
 	return allFunctions

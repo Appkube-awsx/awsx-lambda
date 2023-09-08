@@ -12,11 +12,11 @@ import (
 // getConfigDataCmd represents the getConfigData command
 var GetNumberOfErrorCmd = &cobra.Command{
 	Use:   "errorCount",
-	Short: "to total number of errors",
-	Long:  ``,
+	Short: "total number of errors",
+	Long:  `get total number of errors of lambda function`,
 	Run: func(cmd *cobra.Command, args []string) {
 
-		authFlag, clientAuth, err := authenticate.CommandAuth(cmd)
+		authFlag, clientAuth, err := authenticate.SubCommandAuth(cmd)
 		if err != nil {
 			cmd.Help()
 			return

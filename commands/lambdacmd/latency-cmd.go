@@ -14,11 +14,11 @@ import (
 // getConfigDataCmd represents the getConfigData command
 var GetLatencyCmd = &cobra.Command{
 	Use:   "latency",
-	Short: "to get latency of lambda function",
-	Long:  ``,
+	Short: "lambda latency",
+	Long:  `get latency of lambda function`,
 	Run: func(cmd *cobra.Command, args []string) {
 
-		authFlag, clientAuth, err := authenticate.CommandAuth(cmd)
+		authFlag, clientAuth, err := authenticate.SubCommandAuth(cmd)
 		if err != nil {
 			cmd.Help()
 			return

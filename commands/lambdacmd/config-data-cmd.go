@@ -14,11 +14,11 @@ import (
 // GetConfigDataCmd represents the getConfigData command
 var GetConfigDataCmd = &cobra.Command{
 	Use:   "getConfigData",
-	Short: "A brief description of your command",
-	Long:  ``,
+	Short: "lambda configuration",
+	Long:  `get configuration of lambda function`,
 	Run: func(cmd *cobra.Command, args []string) {
 
-		authFlag, clientAuth, err := authenticate.CommandAuth(cmd)
+		authFlag, clientAuth, err := authenticate.SubCommandAuth(cmd)
 		if err != nil {
 			cmd.Help()
 			return

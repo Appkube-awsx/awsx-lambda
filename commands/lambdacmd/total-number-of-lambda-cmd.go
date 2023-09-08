@@ -12,11 +12,11 @@ import (
 // GetTotalNumberOfLambdaCmd represents the number command
 var GetTotalNumberOfLambdaCmd = &cobra.Command{
 	Use:   "totalCount",
-	Short: "gets total number of lambdas present in aws account",
-	Long:  ``,
+	Short: "total number of lambdas in an aws account",
+	Long:  `get total number of lambdas present in aws account`,
 	Run: func(cmd *cobra.Command, args []string) {
 
-		authFlag, clientAuth, err := authenticate.CommandAuth(cmd)
+		authFlag, clientAuth, err := authenticate.SubCommandAuth(cmd)
 		if err != nil {
 			cmd.Help()
 			return
