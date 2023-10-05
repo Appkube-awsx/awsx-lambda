@@ -55,6 +55,7 @@ func init() {
 	AwsxLambdaCmd.AddCommand(lambdacmd.GetTotalNumberOfLambdaCmd)
 	AwsxLambdaCmd.AddCommand(lambdacmd.GetDetailOfErrorCmd)
 	AwsxLambdaCmd.AddCommand(lambdacmd.GetLatencyCmd)
+	AwsxLambdaCmd.AddCommand(lambdacmd.GetConfigWithTagsCmd)
 
 	AwsxLambdaCmd.Flags().String("marker", "", "marker for next list")
 	AwsxLambdaCmd.Flags().Bool("all", false, "to get all lambdas at once")

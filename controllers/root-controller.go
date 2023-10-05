@@ -78,3 +78,39 @@ func AllLambdaFunctionsWithTagsController(auth client.Auth) (string, error) {
 	log.Println(string(jsonData))
 	return string(jsonData), err
 }
+
+func LambdaFunctionWithTagsController(functionName string, auth client.Auth) (string, error) {
+	fmt.Println("Request to get lambda function with tags")
+	lambdaClient := client.GetClient(auth, client.LAMBDA_CLIENT).(*lambda.Lambda)
+
+	lambdaDetail := services.GetLambdaDetail(lambdaClient, functionName)
+
+	allLambda := []LambdaObj{}
+
+	input := &lambda.ListTagsInput{
+		Resource: aws.String(*lambdaDetail.Configuration.FunctionArn),
+	}
+	resp, err := lambdaClient.ListTags(input)
+	if err != nil {
+		fmt.Println("Error: in getting lambda tags", err)
+		return "", err
+	}
+
+	allTags := []map[string]string{}
+	for key, val := range resp.Tags {
+		tagsMap := make(map[string]string)
+		tagsMap["Key"] = key
+		tagsMap["Value"] = *val
+
+		allTags = append(allTags, tagsMap)
+	}
+	lambdaObj := LambdaObj{
+		Function: lambdaDetail.Configuration,
+		Tags:     resp.Tags,
+	}
+	allLambda = append(allLambda, lambdaObj)
+
+	jsonData, err := json.Marshal(allLambda)
+	log.Println(string(jsonData))
+	return string(jsonData), err
+}
