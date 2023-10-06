@@ -85,8 +85,6 @@ func LambdaFunctionWithTagsController(functionName string, auth client.Auth) (st
 
 	lambdaDetail := services.GetLambdaDetail(lambdaClient, functionName)
 
-	allLambda := []LambdaObj{}
-
 	input := &lambda.ListTagsInput{
 		Resource: aws.String(*lambdaDetail.Configuration.FunctionArn),
 	}
@@ -108,9 +106,8 @@ func LambdaFunctionWithTagsController(functionName string, auth client.Auth) (st
 		Function: lambdaDetail.Configuration,
 		Tags:     resp.Tags,
 	}
-	allLambda = append(allLambda, lambdaObj)
 
-	jsonData, err := json.Marshal(allLambda)
+	jsonData, err := json.Marshal(lambdaObj)
 	log.Println(string(jsonData))
 	return string(jsonData), err
 }
